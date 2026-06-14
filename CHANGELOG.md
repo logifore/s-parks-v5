@@ -6,9 +6,10 @@ All notable changes to S-parks are documented in this file.
 
 ### Release Ops
 
-- Prepare S-parks V4.5 as an in-place upgrade for the existing `logifore/s-parks-v4` GitHub repository.
+- Prepare S-parks V4.5 as an in-place upgrade for the existing `logifore/s-parks-v4-5` GitHub repository.
 - Align repository documentation with the V4.5 release target and add a dedicated changelog for future version pushes.
 - Keep the deployment plan on the existing Vercel project instead of creating a separate `v4.5` project.
+- Remove the legacy V3 GitHub/Vercel release and consolidate the live version under the single V4.5 release name.
 
 ### UX And Routing
 
