@@ -83,9 +83,265 @@ window.SparksRenderers = ((utils) => {
     `;
   }
 
+  function creatorWorkCards(creator) {
+    const works = creator.assets.map((id) => getAssetById(id));
+    const primary = works[0];
+    const secondary = works[1];
+    const tertiary = works[2];
+    return `
+      <div class="creator-work-grid">
+        <a class="creator-work-card creator-work-card-large" href="${escapeHtml(hrefFor("detail", primary.id))}" data-action="open-detail" data-asset="${escapeHtml(primary.id)}">
+          ${image(primary.image, primary.name, "creator-work-image")}
+          <div class="creator-work-overlay">
+            <span class="eyebrow">01</span>
+            <h3>${escapeHtml(primary.name)}</h3>
+            <p>${escapeHtml(primary.meta)}</p>
+          </div>
+        </a>
+        ${secondary ? `
+          <a class="creator-work-card creator-work-card-side" href="${escapeHtml(hrefFor("detail", secondary.id))}" data-action="open-detail" data-asset="${escapeHtml(secondary.id)}">
+            ${image(secondary.image, secondary.name, "creator-work-image")}
+            <div class="creator-work-overlay">
+              <span class="eyebrow">02</span>
+              <h3>${escapeHtml(secondary.name)}</h3>
+              <p>${escapeHtml(secondary.meta)}</p>
+            </div>
+          </a>
+        ` : ""}
+        ${tertiary ? `
+          <a class="creator-work-card creator-work-card-side" href="${escapeHtml(hrefFor("detail", tertiary.id))}" data-action="open-detail" data-asset="${escapeHtml(tertiary.id)}">
+            ${image(tertiary.image, tertiary.name, "creator-work-image")}
+            <div class="creator-work-overlay">
+              <span class="eyebrow">03</span>
+              <h3>${escapeHtml(tertiary.name)}</h3>
+              <p>${escapeHtml(tertiary.meta)}</p>
+            </div>
+          </a>
+        ` : ""}
+        <a class="creator-work-card creator-work-card-upload" href="#upload">
+          <div class="creator-work-upload">
+            ${icon("add")}
+            <span>Upload New Work</span>
+          </div>
+        </a>
+      </div>
+    `;
+  }
+
+  function creatorCollectionCards(state) {
+    const projects = Object.entries(state.projects || {});
+    return `
+      <div class="creator-collection-grid">
+        ${projects.map(([id, project]) => `
+          <article class="glass-panel creator-collection-card">
+            <span class="eyebrow">${escapeHtml(project.stage)}</span>
+            <h3>${escapeHtml(project.name)}</h3>
+            <p>${escapeHtml(project.summary)}</p>
+            <a class="button button-ghost compact" href="${escapeHtml(hrefFor("project", id))}" data-action="open-project" data-project="${escapeHtml(id)}">查看项目</a>
+          </article>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function refineAssetType(category) {
+    const map = {
+      "人物三视图": "角色",
+      "场景图": "环境",
+      "道具": "载具",
+      "服装造型": "分镜脚本",
+      "Prompt": "分镜脚本"
+    };
+    return map[category] || category;
+  }
+
+  function assetCategoryIcon(category) {
+    const map = {
+      "角色": "person",
+      "环境": "landscape",
+      "载具": "rocket_launch",
+      "分镜脚本": "movie"
+    };
+    return map[category] || "folder";
+  }
+
+  function renderCreatorOnboarding(appContent) {
+    const benefits = [
+      {
+        title: "行业领先的收益分成",
+        text: "我们推出艺术家的作品，享受高达 85% 的收益分成，透明的结算体系确保您每一分付出都得到公平回报。",
+        icon: "payments",
+        stat: "85% 分成",
+        previewAssetId: "architectural-atrium",
+        previewLabel: "高端空间方案"
+      },
+      {
+        title: "全球曝光",
+        text: "连接全球顶级的游戏工作室、影视制作团队和建筑事务所。",
+        icon: "public",
+        stat: "120+ 工作室",
+        previewAssetId: "neo-alley-sequence",
+        previewLabel: "国际项目场景"
+      },
+      {
+        title: "专业级工具集",
+        text: "一键同步、版本控制与自动化渲染预览，简化您的发布流程。",
+        icon: "architecture",
+        stat: "48h 审核",
+        previewAssetId: "samurai-triptych",
+        previewLabel: "高标准角色资产"
+      }
+    ];
+    const showcaseAssets = [
+      {
+        asset: getAssetById("architectural-atrium"),
+        eyebrow: "Featured Space Pack",
+        title: "极简中庭结构包",
+        note: "白模建筑、透视参考与品牌空间镜头，一次锁定展示级空间语言。"
+      },
+      {
+        asset: getAssetById("samurai-triptych"),
+        eyebrow: "Character System",
+        title: "角色一致性模板",
+        note: "三视图 + 服装细节"
+      },
+      {
+        asset: getAssetById("orbital-shuttle"),
+        eyebrow: "Studio Delivery",
+        title: "商业级载具规范",
+        note: "展示台、材质脚本、硬表面拆解"
+      }
+    ];
+    return pageShell("成为创作者", "加入顶级创作者社区", "把创作资产变成被全球顶尖工作室采用的标准作品。", `
+      <section class="onboarding-shell">
+        <section class="onboarding-hero">
+          <div class="onboarding-copy">
+            <h1>塑造未来的视觉。<br><span>加入顶级创作者社区。</span></h1>
+            <p>在 S-parks，我们为追求极致的数字艺术家和设计师提供卓越的展示平台，将您的创意资产转化为被全球顶尖工作室采用的标准。</p>
+            <div class="hero-actions left-actions">
+              <a class="button button-primary" href="#upload">立即申请</a>
+              <a class="button button-ghost" href="#community">了解详情</a>
+            </div>
+          </div>
+          <div class="onboarding-hero-panel" aria-hidden="true">
+            <article class="onboarding-stage-feature">
+              ${image(showcaseAssets[0].asset.image, showcaseAssets[0].title, "onboarding-stage-image")}
+              <div class="onboarding-stage-overlay">
+                <span class="eyebrow">${escapeHtml(showcaseAssets[0].eyebrow)}</span>
+                <strong>${escapeHtml(showcaseAssets[0].title)}</strong>
+                <p>${escapeHtml(showcaseAssets[0].note)}</p>
+              </div>
+            </article>
+            <div class="onboarding-stage-rail">
+              ${showcaseAssets.slice(1).map((item) => `
+                <article class="onboarding-stage-chip">
+                  ${image(item.asset.image, item.title, "onboarding-stage-chip-image")}
+                  <div>
+                    <span class="eyebrow">${escapeHtml(item.eyebrow)}</span>
+                    <strong>${escapeHtml(item.title)}</strong>
+                    <p>${escapeHtml(item.note)}</p>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+          </div>
+        </section>
+        <section class="onboarding-benefits">
+          <div class="section-title">
+            <h2>为什么选择 S-parks?</h2>
+            <p>专为专业人士打造的创作生态。</p>
+          </div>
+          <div class="onboarding-grid">
+            ${benefits.map((benefit, index) => `
+              <article class="onboarding-card ${index === 2 ? "onboarding-card-featured" : ""}">
+                <span class="support-icon">${icon(benefit.icon)}</span>
+                <span class="onboarding-card-stat">${escapeHtml(benefit.stat)}</span>
+                <h3>${escapeHtml(benefit.title)}</h3>
+                <p>${escapeHtml(benefit.text)}</p>
+                <div class="onboarding-card-media ${index === 2 ? "onboarding-card-media-featured" : ""}">
+                  ${image(getAssetById(benefit.previewAssetId).image, benefit.previewLabel, "onboarding-feature-image")}
+                  <div class="onboarding-card-media-copy">
+                    <span class="eyebrow">${escapeHtml(benefit.previewLabel)}</span>
+                    <strong>${escapeHtml(getAssetById(benefit.previewAssetId).name)}</strong>
+                  </div>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+        <section class="onboarding-cta">
+          <h2>准备好展现您的才华了吗?</h2>
+          <p>申请流程简单快捷。提交您的作品集链接，我们的专业策展团队将在 48 小时内完成审核。</p>
+          <a class="button button-primary" href="#upload">开始申请流程</a>
+        </section>
+      </section>
+    `, "creator-onboarding-page");
+  }
+
+  function renderAccount(state) {
+    const purchased = (state.downloadRecords || []).map((record) => getAssetById(record.assetId));
+    const sample = (purchased.length ? purchased : [])
+      .concat(content.assets.items.filter((asset) => !purchased.some((entry) => entry.id === asset.id)))
+      .slice(0, 3);
+    return pageShell("个人主页", "陈思远", "普通会员", `
+      <section class="account-shell">
+        <section class="account-hero">
+          <div class="account-avatar">${image("https://lh3.googleusercontent.com/aida-public/AB6AXuBl8whoU5MlIADYjJiOYQoBI2AAqeaFfBwFyBKVOHXyic5TlVsXl26WlsWzTeXdwuO1x8D1goEHUbNzeojIxQ1UOjmVGu2G3zzRL85LLHsBXxMjOoIy22ZSwN1TShvPC5Xn6LsA2gjcGl3xvC-OUM28MqwfDsmH3g6eeKMtBTbM-30EOkGoV6UmAXaLDMO0OXMCgG7H5_cqd6SWR6IfqpGmPm2B0VwTWQMCiPY4E5U6SPrgJGo6BS6Le1nPBHTC8ieblPVKvdfL8jYd", "account", "account-avatar-image")}</div>
+          <h1>陈思远</h1>
+          <p>siyuan.chen@example.com</p>
+          <span class="account-badge">普通会员</span>
+        </section>
+        <section class="account-creator-callout">
+          <div class="account-creator-frame">
+            <span class="eyebrow">Creator Program</span>
+            <h2>申请成为创作者</h2>
+            <p>把个人作品升级成可展示、可授权、可获得收益分成的创作者主页，并继续沿用当前站内的浏览与上传流程。</p>
+            <div class="account-entry-actions">
+              <a class="button button-primary" href="#creator-onboarding">立即申请</a>
+              <a class="button button-ghost" href="#creator?creator=elena-voss">进入创作者主页</a>
+            </div>
+          </div>
+        </section>
+        <section class="account-summary">
+          <article class="account-panel">
+            <div class="account-panel-head">${icon("account_balance_wallet")}<h2>账户余额</h2></div>
+            <strong>￥120.00</strong>
+            <a class="button button-primary compact" href="#membership">充值</a>
+          </article>
+          <article class="account-panel">
+            <div class="account-panel-head">${icon("local_activity")}<h2>我的优惠券</h2></div>
+            <strong>3 <span>张可用</span></strong>
+            <a class="button button-ghost compact" href="#membership">查看全部</a>
+          </article>
+        </section>
+        <section class="account-assets">
+          <div class="section-title"><h2>我的已购素材</h2></div>
+          <div class="account-asset-grid">
+            ${sample.map((asset) => `
+              <a class="account-asset-card" href="${escapeHtml(hrefFor("detail", asset.id))}" data-action="open-detail" data-asset="${escapeHtml(asset.id)}">
+                ${image(asset.image, asset.name, "account-asset-image")}
+                <div class="account-asset-copy"><h3>${escapeHtml(asset.name)}</h3><p>${escapeHtml(asset.meta)}</p></div>
+              </a>
+            `).join("")}
+          </div>
+        </section>
+        <section class="account-settings">
+          <div class="section-title"><h2>设置与隐私</h2></div>
+          <div class="account-settings-list">
+            ${["个人资料设置", "账号安全与密码", "账单与发票管理", "退出登录"].map((item, index) => `
+              <article class="account-settings-row ${index === 3 ? "danger" : ""}">
+                <span>${escapeHtml(item)}</span>
+                ${index === 3 ? "" : icon("chevron_right")}
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      </section>
+    `, "account-page");
+  }
+
   function renderHome(appContent) {
     const { home, secondaryNav } = appContent;
-    const keywords = home.eyebrow.split(" ").map((word) => `<span>${escapeHtml(word)}</span>`).join("");
     const actions = home.actions.map((action) => `
       <a class="button ${action.style === "primary" ? "button-primary" : "button-ghost"}" href="#${escapeHtml(action.route)}">
         ${escapeHtml(action.label)}${action.icon ? icon(action.icon) : ""}
@@ -93,79 +349,74 @@ window.SparksRenderers = ((utils) => {
     `).join("");
 
     return `
-      <section class="home-hero">
-        <div class="keyword-field" aria-hidden="true">${keywords}</div>
-        <div class="hero-copy glass-hero">
-          <span class="eyebrow">AIGC CREATOR COMMUNITY</span>
-          <h1>${escapeHtml(home.title)} <em>${escapeHtml(home.accent)}</em></h1>
-          <p>${escapeHtml(home.intro)}</p>
-          <div class="hero-actions">${actions}</div>
-        </div>
-        <a class="scroll-cue" href="#assets">探索更多</a>
-      </section>
+      <section class="home-shell">
+        <section class="home-hero-canvas">
+          <div class="home-grid-lines" aria-hidden="true"></div>
+          <div class="home-massive-type" aria-hidden="true">S-PARKS</div>
+          <div class="home-hero-copy">
+            <h1>S-PARKS<br><span>${escapeHtml(home.accent)}</span></h1>
+            <p>创作者专享 / FOR CREATORS</p>
+            <div class="hero-actions hero-actions-left">${actions}</div>
+          </div>
+          <a class="home-scroll-cue" href="#community">SCROLL DOWN</a>
+        </section>
 
-      <section class="section-band value-band">
-        ${home.valueCards.map((item) => `
-          <article class="glass-panel value-card">
-            <h2>${escapeHtml(item.title)}</h2>
-            <p>${escapeHtml(item.text)}</p>
-          </article>
-        `).join("")}
-      </section>
+        <section class="home-vision">
+          <div class="home-vision-copy">
+            <span class="eyebrow">核心愿景 / Core Vision</span>
+            <h2>多维素材<br><span>重塑创作</span></h2>
+            <p>提供 AIGC 专业级角色三视图、分镜故事板、高精度场景图以及完整的短片资产体系，助力创作者从灵感到成片的跨越。</p>
+          </div>
+          <div class="home-vision-stack">
+            ${home.trending.slice(0, 3).map((item, index) => `
+              <a class="home-vision-card home-vision-card-${index + 1}" href="${escapeHtml(hrefFor("detail", item.id))}" data-action="open-detail" data-asset="${escapeHtml(item.id)}">
+                ${image(item.image, item.name, "home-vision-image")}
+                <div class="home-vision-card-copy">
+                  ${icon(index === 0 ? "view_in_ar" : index === 1 ? "movie" : "landscape")}
+                  <span>${String(index + 1).padStart(2, "0")}</span>
+                  <h3>${escapeHtml(index === 0 ? "角色资产" : index === 1 ? "叙事分镜" : "高精场景")}</h3>
+                  <p>${escapeHtml(item.meta)}</p>
+                </div>
+              </a>
+            `).join("")}
+          </div>
+        </section>
 
-      <section class="section-band feature-band">
-        <div class="section-title">
-          <span class="eyebrow">第一版功能地图</span>
-          <h2>先把闭环摆出来，再逐层加深</h2>
-          <p>v3 开始把入口页升级成真正的独立产品页，而不只是单点功能占位。</p>
-        </div>
-        <div class="feature-grid">
-          ${secondaryNav.map((item) => `
-            <a class="glass-panel feature-card" href="#${escapeHtml(item.route)}">
-              ${icon(item.icon)}
-              <strong>${escapeHtml(item.label)}</strong>
-              <span>进入原型</span>
-            </a>
-          `).join("")}
-        </div>
-      </section>
+        <section class="section-band home-creators">
+          <div class="section-title">
+            <span class="eyebrow">Featured</span>
+            <h2>创作者推荐</h2>
+            <a href="#community">查看全部 ${icon("arrow_right_alt")}</a>
+          </div>
+          <div class="home-creator-grid">
+            ${home.creators.map((creatorRef, index) => `
+              <a class="home-creator-card" href="${escapeHtml(hrefFor("creator", creatorRef.id))}" data-action="open-creator" data-creator="${escapeHtml(creatorRef.id)}">
+                ${image(creatorRef.image, creatorRef.name, "home-creator-image")}
+                <div class="home-creator-copy">
+                  <span>${String(index + 1).padStart(2, "0")}</span>
+                  <h3>${escapeHtml(creatorRef.name)}</h3>
+                  <p>${escapeHtml(creatorRef.role)}</p>
+                </div>
+              </a>
+            `).join("")}
+          </div>
+        </section>
 
-      <section class="section-band">
-        <div class="section-title">
-          <span class="eyebrow">推荐</span>
-          <h2>创作者推荐</h2>
-          <a href="#community">查看全部 ${icon("arrow_right_alt")}</a>
-        </div>
-        <div class="creator-feature-grid">
-          ${home.creators.map((creatorRef) => `
-            <a class="image-card creator-card" href="${escapeHtml(hrefFor("creator", creatorRef.id))}" data-action="open-creator" data-creator="${escapeHtml(creatorRef.id)}">
-              ${image(creatorRef.image, creatorRef.name, "card-image")}
-              <div class="card-overlay">
-                <span>${escapeHtml(creatorRef.role)}</span>
-                <h3>${escapeHtml(creatorRef.name)}</h3>
-                <p>${escapeHtml(creatorRef.bio)}</p>
-              </div>
-            </a>
-          `).join("")}
-        </div>
-      </section>
-
-      <section class="section-band low-band">
-        <div class="section-title">
-          <span class="eyebrow">社区</span>
-          <h2>热门素材</h2>
-        </div>
-        <div class="bento-grid">
-          ${home.trending.map((item, index) => `
-            <a class="image-card trend-card trend-${index + 1}" href="${escapeHtml(hrefFor("detail", item.id))}" data-action="open-detail" data-asset="${escapeHtml(item.id)}">
-              ${image(item.image, item.name, "card-image")}
-              <div class="card-overlay">
-                <h3>${escapeHtml(item.name)}</h3>
-                <p>${escapeHtml(item.meta)}</p>
-              </div>
-            </a>
-          `).join("")}
-        </div>
+        <section class="section-band home-feature-band">
+          <div class="section-title">
+            <span class="eyebrow">Functions</span>
+            <h2>功能入口</h2>
+          </div>
+          <div class="home-feature-grid">
+            ${secondaryNav.map((item) => `
+              <a class="home-feature-card" href="#${escapeHtml(item.route)}">
+                ${icon(item.icon)}
+                <strong>${escapeHtml(item.label)}</strong>
+                <span>进入原型</span>
+              </a>
+            `).join("")}
+          </div>
+        </section>
       </section>
     `;
   }
@@ -182,7 +433,7 @@ window.SparksRenderers = ((utils) => {
 
     const filters = ["全部", ...assets.filters];
     const body = `
-      <div class="control-bar" role="region" aria-label="素材筛选">
+      <div class="control-bar control-bar-v4" role="region" aria-label="素材筛选">
         <div class="segmented-control" aria-label="素材分类">
           ${filters.map((filter) => `<button class="${filter === selected ? "active" : ""}" type="button" data-action="filter-category" data-category="${escapeHtml(filter)}">${escapeHtml(filter)}</button>`).join("")}
         </div>
@@ -192,14 +443,14 @@ window.SparksRenderers = ((utils) => {
         ${assets.facets.map((filter) => `<span>${escapeHtml(filter)}</span>`).join("")}
       </div>
       <div class="result-line">找到 <strong>${matches.length}</strong> 个素材${query ? ` · 关键词：${escapeHtml(state.query)}` : ""}</div>
-      <div class="asset-grid">
+      <div class="asset-grid asset-grid-v4">
         ${matches.map((asset, index) => assetCard(asset, { wide: index === 0 })).join("") || `<article class="empty-state glass-panel"><h2>没有匹配素材</h2><p>换一个关键词或分类试试。</p></article>`}
       </div>
-      <section class="scene-strip">
+      <section class="scene-strip scene-strip-v4">
         <div class="section-title">
-          <span class="eyebrow">场景素材</span>
-          <h2>时间切换会成为场景页的核心交互</h2>
-          <p>你提出的日 / 夜 / 黄昏一键切换，已经在素材详情页做成可操作原型。</p>
+          <span class="eyebrow">Scene Variants</span>
+          <h2>时间切换和构图一致性继续保留，并升级成更像精选陈列</h2>
+          <p>原版的场景切换能力继续可用，V4 主要重做呈现方式、阅读顺序和信息密度。</p>
         </div>
         <div class="scene-grid">
           ${assets.scenes.map((scene) => `<article class="glass-panel scene-card"><h3>${escapeHtml(scene.name)}</h3><p>${escapeHtml(scene.meta)}</p></article>`).join("")}
@@ -212,70 +463,135 @@ window.SparksRenderers = ((utils) => {
   }
 
   function renderAssets(appContent, state) {
-    return renderAssetBrowser(appContent, state, true);
+    const selected = state.selectedCategory || "全部";
+    const query = state.query.trim().toLowerCase();
+    const categories = ["全部", "角色", "环境", "载具", "分镜脚本"];
+    const matches = appContent.assets.items.filter((asset) => {
+      const type = refineAssetType(asset.category);
+      const target = `${asset.name} ${asset.meta} ${asset.category} ${type}`.toLowerCase();
+      const categoryMatch = selected === "全部" || type === selected;
+      return categoryMatch && (!query || target.includes(query));
+    });
+    const displayCards = [...matches];
+    while (displayCards.length < 4) displayCards.push(null);
+    return pageShell("素材库", appContent.assets.title, appContent.assets.subtitle, `
+      <section class="asset-library-shell">
+        <aside class="asset-sidebar">
+          <div class="asset-sidebar-head">
+            ${icon("folder")}
+            <div><strong>资产分类</strong><span>Asset Categories</span></div>
+          </div>
+          <div class="asset-category-list">
+            ${categories.map((category) => `
+              <button class="asset-category-item ${selected === category ? "active" : ""}" type="button" data-action="filter-category" data-category="${escapeHtml(category)}">
+                ${icon(assetCategoryIcon(category))}
+                <span>${escapeHtml(category)}</span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="asset-sidebar-bottom">
+            <button class="asset-create-category" type="button">${icon("add")} 新建分类</button>
+            <a href="#collections">${icon("folder_special")} 回收站</a>
+            <a href="#support">${icon("help")} 帮助中心</a>
+          </div>
+        </aside>
+        <div class="asset-library-main">
+          <div class="asset-library-toolbar">
+            <div class="asset-library-actions">
+              <button class="button button-ghost compact asset-toolbar-button" type="button">${icon("filter_list")} 筛选</button>
+              <button class="button button-ghost compact asset-toolbar-button" type="button">${icon("sort")} 最新上传</button>
+            </div>
+          </div>
+          <div class="asset-library-grid">
+            ${displayCards.map((asset) => asset ? `
+              <a class="asset-library-card" href="${escapeHtml(hrefFor("detail", asset.id))}" data-action="open-detail" data-asset="${escapeHtml(asset.id)}">
+                ${image(asset.image, asset.name, "asset-library-image")}
+              </a>
+            ` : `
+              <article class="asset-library-card asset-library-card-placeholder" aria-hidden="true">
+                <div class="asset-pending">Asset Render Pending</div>
+              </article>
+            `).join("")}
+          </div>
+        </div>
+      </section>
+    `, "assets-page assets-page-v4");
   }
 
   function renderCommunity(appContent) {
     const { community, creators } = appContent;
     const body = `
-      <div class="community-grid">
-        ${community.people.map((id) => {
-          const person = creators[id];
-          return `
-            <article class="glass-panel community-card profile-card">
-              ${image(person.image, person.name, "avatar large-avatar")}
-              <div>
-                <span>${escapeHtml(person.role)}</span>
-                <h2>${escapeHtml(person.name)}</h2>
-                <p>${escapeHtml(person.status)}</p>
-              </div>
-              <div class="stats-row">
-                ${stat("上传", person.stats.uploads)}
-                ${stat("收益", person.stats.revenue)}
-              </div>
-              <a class="button button-ghost compact" href="${escapeHtml(hrefFor("creator", id))}" data-action="open-creator" data-creator="${escapeHtml(id)}">查看主页</a>
-            </article>
-          `;
-        }).join("")}
-      </div>
+      <section class="community-shell">
+        <header class="community-hero">
+          <h1>远见者</h1>
+          <p>探索 AI 生成内容的先锋。由顶尖创作者呈现的策展画廊，不断突破数字艺术的边界。</p>
+        </header>
+        <div class="community-grid-v4">
+          ${community.people.map((id, index) => {
+            const person = creators[id];
+            return `
+              <a class="community-card-v4 ${index === 0 ? "community-card-v4-featured" : ""}" href="${escapeHtml(hrefFor("creator", id))}" data-action="open-creator" data-creator="${escapeHtml(id)}">
+                <div class="community-card-v4-image-shell">
+                  ${image(person.cover || person.image, person.name, "community-card-v4-image")}
+                  ${index === 0 ? `<span class="community-badge">本周推荐</span>` : ""}
+                </div>
+                <div class="community-card-v4-copy">
+                  ${index !== 0 ? image(person.image, person.name, "community-card-v4-avatar") : ""}
+                  <div>
+                    <h2>${escapeHtml(person.name)}</h2>
+                    <span>${escapeHtml(person.role)}</span>
+                  </div>
+                  <p>${escapeHtml(person.bio)}</p>
+                </div>
+              </a>
+            `;
+          }).join("")}
+        </div>
+      </section>
     `;
-    return pageShell("Community", community.title, community.subtitle, body, "community-page");
+    return pageShell("Community", community.title, community.subtitle, body, "community-page community-page-v4");
   }
 
   function renderSupport(appContent) {
     const { support } = appContent;
     const body = `
-      <form class="support-search" role="search">
-        ${icon("search")}
-        <input type="search" placeholder="搜索问题..." aria-label="搜索问题">
-        <button class="button button-primary compact" type="submit">搜索</button>
-      </form>
-      <div class="support-grid">
-        ${support.categories.map((category) => `
-          <a class="glass-panel support-card" href="#support">
-            <span class="support-icon">${icon(category.icon)}</span>
-            <h2>${escapeHtml(category.title)}</h2>
-            <p>${escapeHtml(category.text)}</p>
-            <strong>查看详情 ${icon("arrow_forward")}</strong>
-          </a>
-        `).join("")}
-      </div>
-      <section class="faq-section">
-        <div class="section-title">
-          <span class="eyebrow">FAQ</span>
-          <h2>热门问题</h2>
-        </div>
-        <div class="faq-list">
-          ${support.faq.map((item, index) => `
-            <details class="glass-panel faq-item" ${index === 0 ? "open" : ""}>
-              <summary>${escapeHtml(item.question)} ${icon("expand_more")}</summary>
-              <p>${escapeHtml(item.answer)}</p>
-            </details>
+      <section class="support-shell">
+        <header class="support-hero">
+          <h1>${escapeHtml(support.title)}</h1>
+          <p>${escapeHtml(support.subtitle)}</p>
+          <form class="support-search" role="search">
+            ${icon("search")}
+            <input type="search" placeholder="搜索问题..." aria-label="搜索问题">
+            <button class="button button-primary compact" type="submit">搜索</button>
+          </form>
+        </header>
+        <div class="support-grid-v4">
+          ${support.categories.map((category) => `
+            <a class="support-card-v4" href="#support">
+              <span class="support-icon">${icon(category.icon)}</span>
+              <h2>${escapeHtml(category.title)}</h2>
+              <p>${escapeHtml(category.text)}</p>
+              <strong>查看详情 ${icon("arrow_forward")}</strong>
+            </a>
           `).join("")}
         </div>
+        <section class="faq-section-v4">
+          <div class="section-title">
+            <span class="eyebrow">FAQ</span>
+            <h2>热门问题</h2>
+          </div>
+          <div class="faq-list-v4">
+            ${support.faq.map((item, index) => `
+              <details class="faq-item-v4" ${index === 0 ? "open" : ""}>
+                <summary>${escapeHtml(item.question)} ${icon("expand_more")}</summary>
+                <p>${escapeHtml(item.answer)}</p>
+              </details>
+            `).join("")}
+          </div>
+        </section>
       </section>
     `;
-    return pageShell("Support", support.title, support.subtitle, body, "support-page");
+    return pageShell("Support", support.title, support.subtitle, body, "support-page support-page-v4");
   }
 
   function renderDetail(appContent, state) {
@@ -342,71 +658,137 @@ window.SparksRenderers = ((utils) => {
   function renderCreator(appContent, state) {
     const creatorId = state.activeCreatorId || DEFAULT_CREATOR_ID;
     const creator = getCreatorById(creatorId);
-    const body = `
-      <section class="creator-hero image-card">
-        ${image(creator.cover, creator.name, "card-image")}
-        <div class="creator-hero-overlay">
-          ${image(creator.image, creator.name, "avatar hero-avatar")}
+    const tab = state.creatorTab || "works";
+    if (creatorId === "marcus-thorne") {
+      const body = `
+      <section class="creator-shell">
+        <header class="creator-hero-v4">
+          <div class="creator-hero-avatar">
+            ${image(creator.image, creator.name, "creator-hero-avatar-image")}
+          </div>
           <div class="creator-hero-copy">
-            <span class="eyebrow">${escapeHtml(creator.role)}</span>
-            <h2>${escapeHtml(creator.name)}</h2>
+            <h1>${escapeHtml(creator.name)}</h1>
             <p>${escapeHtml(creator.bio)}</p>
+            <div class="creator-hero-stats">
+              ${Object.entries(creator.stats).map(([label, value]) => `
+                <div>
+                  <strong>${escapeHtml(value)}</strong>
+                  <span>${escapeHtml(label)}</span>
+                </div>
+              `).join("")}
+            </div>
           </div>
-          <div class="hero-actions left-actions">
-            <a class="button button-primary" href="#upload">进入上传发布</a>
-            <a class="button button-ghost" href="#collections">查看项目夹</a>
+          <div class="creator-hero-actions">
+            <a class="button button-ghost" href="#upload">设置</a>
+            <a class="button button-ghost" href="#support">分享</a>
           </div>
-        </div>
-      </section>
-      <div class="creator-dashboard">
-        <article class="glass-panel metric-panel">
-          <span class="eyebrow">签约状态</span>
-          <h3>${escapeHtml(creator.status)}</h3>
-          <p>适合展示创作者身份、审核进度与合作可信度。</p>
-        </article>
-        ${Object.entries(creator.stats).map(([label, value]) => `<article class="glass-panel metric-panel"><span class="eyebrow">${escapeHtml(label)}</span><h3>${escapeHtml(value)}</h3><p>持续沉淀作品与收益表现。</p></article>`).join("")}
-      </div>
-      <div class="dual-grid">
-        <article class="glass-panel info-block">
-          <span class="eyebrow">已上传素材包</span>
-          <div class="info-list">${creator.packs.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}</div>
-        </article>
-        <article class="glass-panel info-block">
-          <span class="eyebrow">共同创作好友</span>
-          <div class="info-list">${creator.friends.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}</div>
-        </article>
-      </div>
-      <div class="dual-grid">
-        <article class="glass-panel info-block">
-          <span class="eyebrow">重点方向</span>
-          <div class="chips">${creator.focus.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
-        </article>
-        <article class="glass-panel info-block">
-          <span class="eyebrow">收益概览</span>
-          <p>当前更像创作者工作台首页，后续可继续扩展月度图表、授权走势和项目分账模块。</p>
-        </article>
-      </div>
-      <div class="dual-grid">
-        <article class="glass-panel info-block">
-          <span class="eyebrow">近期里程碑</span>
-          <div class="info-list">${creator.milestones.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}</div>
-        </article>
-        <article class="glass-panel info-block">
-          <span class="eyebrow">当前工作区</span>
-          <div class="info-list">${creator.workspace.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}</div>
-        </article>
-      </div>
-      <section class="scene-strip">
-        <div class="section-title">
-          <span class="eyebrow">作品</span>
-          <h2>${escapeHtml(creator.name)} 的精选素材</h2>
-        </div>
-        <div class="asset-grid">
-          ${creator.assets.map((id, index) => assetCard(getAssetById(id), { wide: index === 0 })).join("")}
-        </div>
+        </header>
+
+        <section class="creator-tools-banner">
+          <div>
+            <h2>Unlock Studio Tools</h2>
+            <p>Join the creator program to access advanced rendering nodes, commercial licensing, and monetization features.</p>
+          </div>
+          <a class="button button-primary" href="#upload">成为创作者</a>
+        </section>
+
+        <nav class="creator-tabs-v4">
+          <button class="${tab === "works" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="works">个人作品</button>
+          <button class="${tab === "assets" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="assets">已上传素材</button>
+          <button class="${tab === "collections" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="collections">收藏</button>
+        </nav>
+
+        ${tab === "works" ? creatorWorkCards(creator) : ""}
+        ${tab === "assets" ? `
+          <div class="creator-assets-list">
+            ${creator.assets.map((id) => {
+              const asset = getAssetById(id);
+              return `
+                <a class="creator-asset-row" href="${escapeHtml(hrefFor("detail", asset.id))}" data-action="open-detail" data-asset="${escapeHtml(asset.id)}">
+                  ${image(asset.image, asset.name, "creator-asset-image")}
+                  <div class="creator-asset-copy">
+                    <h3>${escapeHtml(asset.name)}</h3>
+                    <p>${escapeHtml(asset.meta)} · ${escapeHtml(asset.price)}</p>
+                  </div>
+                </a>
+              `;
+            }).join("")}
+          </div>
+        ` : ""}
+        ${tab === "collections" ? creatorCollectionCards(state) : ""}
       </section>
     `;
-    return pageShell("创作者主页", "创作者主页", "把社区列表进一步升级为真正可承载上传、收益和作品资产的创作者页面。", body, "creator-page");
+      return pageShell("创作者主页", creator.name, creator.role, body, "creator-page creator-page-v4 creator-page-dark");
+    }
+
+    if (creatorId === "aria-jin") {
+      return pageShell("创作者主页", creator.name, creator.role, `
+        <section class="creator-studio-shell">
+          <header class="creator-studio-hero">
+            <div class="creator-studio-avatar">${image(creator.image, creator.name, "creator-studio-avatar-image")}</div>
+            <div class="creator-studio-copy">
+              <h1>${escapeHtml(creator.name)}</h1>
+              <p>${escapeHtml(creator.bio)}</p>
+              <div class="chips">${creator.focus.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
+            </div>
+            <div class="creator-studio-actions">
+              <a class="button button-primary" href="#upload">${icon("add")} 上传作品</a>
+              <a class="button button-ghost" href="#downloads">${icon("payments")} 收益中心</a>
+            </div>
+          </header>
+          <div class="creator-studio-metrics">
+            ${[
+              ["总浏览量", "1.2M"],
+              ["作品下载量", "34.5K"],
+              ["关注者", "12.8K"],
+              ["累计收益", "￥89,400"]
+            ].map(([label, value]) => `<article><span>${label}</span><strong>${value}</strong></article>`).join("")}
+          </div>
+          <nav class="creator-studio-tabs">
+            <button class="${tab === "works" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="works">My Works</button>
+            <button class="${tab === "assets" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="assets">Shared Assets</button>
+            <button class="${tab === "collections" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="collections">Collections</button>
+          </nav>
+          ${tab === "works" ? creatorWorkCards(creator) : ""}
+          ${tab === "assets" ? `<div class="creator-assets-list">${creator.assets.map((id) => {
+            const asset = getAssetById(id);
+            return `<a class="creator-asset-row" href="${escapeHtml(hrefFor("detail", asset.id))}" data-action="open-detail" data-asset="${escapeHtml(asset.id)}">${image(asset.image, asset.name, "creator-asset-image")}<div class="creator-asset-copy"><h3>${escapeHtml(asset.name)}</h3><p>${escapeHtml(asset.meta)}</p></div></a>`;
+          }).join("")}</div>` : ""}
+          ${tab === "collections" ? creatorCollectionCards(state) : ""}
+        </section>
+      `, "creator-page creator-page-studio");
+    }
+
+    return pageShell("创作者主页", creator.name, creator.role, `
+      <section class="creator-gallery-shell">
+        <header class="creator-gallery-hero">
+          <div class="creator-gallery-avatar">${image(creator.image, creator.name, "creator-gallery-avatar-image")}</div>
+          <div class="creator-gallery-copy">
+            <h1>${escapeHtml(creator.name)}</h1>
+            <p>${escapeHtml(creator.role)} · Stockholm, SE</p>
+            <div class="creator-gallery-actions">
+              <a class="button button-ghost" href="#support">Contact</a>
+              <a class="button button-primary" href="#collections">Follow</a>
+              <a class="icon-button" href="#support" aria-label="分享">${icon("share")}</a>
+            </div>
+          </div>
+        </header>
+        <div class="creator-gallery-stats">
+          ${Object.entries(creator.stats).map(([label, value]) => `<div><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`).join("")}
+        </div>
+        <nav class="creator-gallery-tabs">
+          <button class="${tab === "works" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="works">个人作品</button>
+          <button class="${tab === "assets" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="assets">已上传素材</button>
+          <button class="${tab === "collections" ? "active" : ""}" type="button" data-action="set-creator-tab" data-tab="collections">收藏</button>
+        </nav>
+        ${tab === "works" ? creatorWorkCards(creator) : ""}
+        ${tab === "assets" ? `<div class="creator-assets-list">${creator.assets.map((id) => {
+          const asset = getAssetById(id);
+          return `<a class="creator-asset-row white" href="${escapeHtml(hrefFor("detail", asset.id))}" data-action="open-detail" data-asset="${escapeHtml(asset.id)}">${image(asset.image, asset.name, "creator-asset-image")}<div class="creator-asset-copy"><h3>${escapeHtml(asset.name)}</h3><p>${escapeHtml(asset.meta)}</p></div></a>`;
+        }).join("")}</div>` : ""}
+        ${tab === "collections" ? creatorCollectionCards(state) : ""}
+      </section>
+    `, "creator-page creator-page-gallery");
   }
 
   function renderUpload(appContent, state) {
@@ -661,6 +1043,8 @@ window.SparksRenderers = ((utils) => {
     support: renderSupport,
     detail: renderDetail,
     creator: renderCreator,
+    "creator-onboarding": renderCreatorOnboarding,
+    account: (_, state) => renderAccount(state),
     upload: renderUpload,
     auth: renderAuth,
     licensing: renderLicensing,

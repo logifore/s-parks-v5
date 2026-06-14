@@ -11,6 +11,7 @@
   const DEFAULT_ASSET_ID = content.assets.items[0].id;
   const DEFAULT_CREATOR_ID = content.community.people[0];
   const DEFAULT_PROJECT_ID = "short-drama-a";
+  const CREATOR_TABS = new Set(["works", "assets", "collections"]);
 
   function cloneValue(value) {
     if (typeof structuredClone === "function") return structuredClone(value);
@@ -67,6 +68,7 @@
     route: router.routeFromHash(),
     query: "",
     menuOpen: false,
+    creatorMenuOpen: false,
     selectedCategory: "全部",
     sceneTime: "day",
     collectionCount: 0,
@@ -75,6 +77,7 @@
     signedIn: false,
     licensePurchased: false,
     selectedPlan: "Trial",
+    creatorTab: "works",
     reviewDecisions: {},
     detailAssetId: DEFAULT_ASSET_ID,
     activeCreatorId: DEFAULT_CREATOR_ID,
@@ -149,6 +152,7 @@
 
     if (state.route === "creator") {
       state.activeCreatorId = isKnownCreator(params.creator) ? params.creator : DEFAULT_CREATOR_ID;
+      state.creatorTab = CREATOR_TABS.has(params.tab) ? params.tab : state.creatorTab || "works";
     }
 
     if (state.route === "project") {
@@ -164,6 +168,7 @@
   const nav = document.querySelector("[data-site-nav]");
   const menuButton = document.querySelector("[data-menu-button]");
   const searchInput = document.getElementById("site-search");
+  let creatorMenuCloseTimer = 0;
 
   function setMenuOpen(open) {
     state.menuOpen = Boolean(open);
@@ -177,13 +182,57 @@
     updateChrome();
   }
 
+  function clearCreatorMenuTimer() {
+    if (!creatorMenuCloseTimer) return;
+    window.clearTimeout(creatorMenuCloseTimer);
+    creatorMenuCloseTimer = 0;
+  }
+
+  function setCreatorMenuOpen(open, keepVisibleForOneSecond = false) {
+    clearCreatorMenuTimer();
+    if (!open && keepVisibleForOneSecond) {
+      creatorMenuCloseTimer = window.setTimeout(() => {
+        state.creatorMenuOpen = false;
+        updateChrome();
+      }, 1000);
+      return;
+    }
+    state.creatorMenuOpen = Boolean(open);
+    updateChrome();
+  }
+
   function renderNav() {
-    nav.innerHTML = content.nav.map((item) => `<a href="#${escapeHtml(item.route)}" data-route="${escapeHtml(item.route)}">${escapeHtml(item.label)}</a>`).join("");
+    nav.innerHTML = content.nav.map((item) => {
+      if (item.route === "community") {
+        return `
+          <div class="nav-item nav-item-with-submenu" data-nav-group="creator" data-open="false">
+            <a href="#community" data-route="community" data-creator-trigger="true" aria-haspopup="true" aria-expanded="false">${escapeHtml(item.label)}</a>
+            <div class="nav-submenu" aria-label="创作者菜单">
+              <a href="#community" data-route="community">浏览创作者</a>
+              <a href="#creator-onboarding" data-route="creator-onboarding">成为创作者</a>
+            </div>
+          </div>
+        `;
+      }
+      return `<a href="#${escapeHtml(item.route)}" data-route="${escapeHtml(item.route)}">${escapeHtml(item.label)}</a>`;
+    }).join("");
+  }
+
+  function currentPageTone() {
+    if (state.route === "community" || state.route === "account" || state.route === "creator-onboarding") {
+      return "light";
+    }
+    if (state.route === "creator") {
+      return state.activeCreatorId === "marcus-thorne" ? "dark" : "light";
+    }
+    return "dark";
   }
 
   function render(focusMain = false) {
     syncRouteState();
     setMenuOpen(false);
+    document.body.dataset.route = state.route;
+    document.body.dataset.pageTone = currentPageTone();
     app.innerHTML = router.renderRoute(state.route, state);
     document.title = `S-parks | ${router.navLabel(state.route)}`;
     updateChrome();
@@ -191,6 +240,8 @@
   }
 
   function rerender(message) {
+    document.body.dataset.route = state.route;
+    document.body.dataset.pageTone = currentPageTone();
     app.innerHTML = router.renderRoute(state.route, state);
     updateChrome();
     if (message) showToast(message);
@@ -198,7 +249,9 @@
 
   function updateChrome() {
     nav.querySelectorAll("a[data-route]").forEach((link) => {
-      const active = link.dataset.route === state.route;
+      const route = link.dataset.route;
+      const active = route === state.route
+        || (route === "community" && (state.route === "creator" || state.route === "creator-onboarding"));
       link.classList.toggle("active", active);
       link.setAttribute("aria-current", active ? "page" : "false");
     });
@@ -206,6 +259,10 @@
     menuButton.setAttribute("aria-expanded", String(state.menuOpen));
     menuButton.setAttribute("aria-label", state.menuOpen ? "关闭导航" : "打开导航");
     nav.setAttribute("aria-hidden", String(!state.menuOpen && window.innerWidth <= 920));
+    const creatorGroup = nav.querySelector("[data-nav-group='creator']");
+    const creatorTrigger = nav.querySelector("[data-creator-trigger='true']");
+    if (creatorGroup) creatorGroup.dataset.open = String(state.creatorMenuOpen);
+    if (creatorTrigger) creatorTrigger.setAttribute("aria-expanded", String(state.creatorMenuOpen));
     header.dataset.elevated = String(window.scrollY > 8);
   }
 
@@ -252,7 +309,14 @@
 
     if (action === "open-creator") {
       state.activeCreatorId = isKnownCreator(target.dataset.creator) ? target.dataset.creator : DEFAULT_CREATOR_ID;
+      state.creatorTab = "works";
       goToRoute("creator", state.activeCreatorId);
+      return;
+    }
+
+    if (action === "set-creator-tab") {
+      state.creatorTab = CREATOR_TABS.has(target.dataset.tab) ? target.dataset.tab : "works";
+      rerender();
       return;
     }
 
@@ -376,8 +440,25 @@
       updateChrome();
     });
 
+    const creatorMenuGroup = nav.querySelector("[data-nav-group='creator']");
+    if (creatorMenuGroup) {
+      creatorMenuGroup.addEventListener("mouseenter", () => setCreatorMenuOpen(true));
+      creatorMenuGroup.addEventListener("mouseleave", () => setCreatorMenuOpen(false, true));
+      creatorMenuGroup.addEventListener("focusin", () => setCreatorMenuOpen(true));
+      creatorMenuGroup.addEventListener("focusout", (event) => {
+        if (creatorMenuGroup.contains(event.relatedTarget)) return;
+        setCreatorMenuOpen(false, true);
+      });
+      creatorMenuGroup.addEventListener("click", (event) => {
+        if (event.target.closest("a[data-route]")) setCreatorMenuOpen(false);
+      });
+    }
+
     nav.addEventListener("click", (event) => {
-      if (event.target.closest("a[data-route]")) closeMenu();
+      if (event.target.closest("a[data-route]")) {
+        setCreatorMenuOpen(false);
+        closeMenu();
+      }
     });
 
     searchInput.addEventListener("input", (event) => {
@@ -397,7 +478,10 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeMenu();
+      if (event.key === "Escape") {
+        setCreatorMenuOpen(false);
+        closeMenu();
+      }
     });
 
     app.addEventListener("click", (event) => {

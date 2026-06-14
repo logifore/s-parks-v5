@@ -10,6 +10,8 @@ window.SPARKS_CONTENT = {
   secondaryNav: [
     { route: "detail", label: "素材详情", icon: "image_search" },
     { route: "creator", label: "创作者主页", icon: "account_circle" },
+    { route: "creator-onboarding", label: "成为创作者", icon: "group_add" },
+    { route: "account", label: "个人主页", icon: "badge" },
     { route: "upload", label: "上传发布", icon: "upload" },
     { route: "auth", label: "登录注册", icon: "passkey" },
     { route: "licensing", label: "购买授权", icon: "license" },
@@ -73,7 +75,13 @@ window.SPARKS_CONTENT = {
       { id: "samurai-triptych", name: "武士角色三视图", meta: "正面 / 侧面 / 背面", category: "人物三视图", price: "120 积分", creator: "Elena Voss", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAs2rPZzfnkJY6m1Pzhc8LoHsJcG2j-YLlMHKZWXaRp1CylamFt09bLrWb25XIi2bUD8jFDs2u0frXhIeDjuNHboJl50XR3InuCNbIY11Le_LHSmx02laCpECT55iW2KXaAcRaME_ykfrVVFyLlpjfFClug_QQJy1wBxql1M_b_JK1xutMjmGqaTWgguVl4Zygn2WpRv_XO0a8vQ4e_19LGR-0SJNhcci7QYTsrBebCZpQo1jPjXh_CgGSIs0UquUt9z0yYcsbx0gZQ" },
       { id: "river-dusk-suite", name: "日落河边场景组", meta: "日 / 夜 / 黄昏", category: "场景图", price: "180 积分", creator: "Marcus Thorne", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD50KCrw5wVryhxpMfaEmggeX1cBZMU1s4VdF3pI0A_dOPNgoxKioXnbicvkC6UBrZjxYK0oeq91HB8HHcJWYRE5JX42wXpEzTVGYvjemArJ5kmbP3vp7LsDrTV6ktJC4M808uvOO7Esv5oSsWPFnApB8kF2uvMRizXsHn9nAtgS1A1oI9hUBmSu879hX12I-1pXgwg9pT3_kwNxxvKm3o--GzuMKek95P8-VXlktSglX1znYPlJehDqi8cs-V41eHbyUehNo5fwCc4" },
       { id: "han-robe-look", name: "汉人服装造型", meta: "古风 / 写实 / 长袍", category: "服装造型", price: "90 积分", creator: "Aria Jin", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDXH3xM75SyT5jyNmXQ-jn8g_BZFPZUSZ_bIL2TIzuMwXxxzaVxCUQk-6CnxwNWIOnBwtiiYj_w-n7mQbk8oSqoEsEO1OAWiZkBrjGippRdEPj9yU54iX1T1hSq1oCz4ztNjg1ndVN0eEbWvxfolYHIS5r8f-K8qGByo5TPHYjzKXojnumzaCcTXf_DCz3vx0oAgpZg0e-2WNu2vOhxMMbESSap_Yaxd59w056m7K3rYXPwAdAL-oVVHz8dqhFMn0k4OdGyP2AFp3a" },
-      { id: "terminal-mk2", name: "Terminal MK-II", meta: "OBJ • 8K Maps", category: "道具", price: "60 积分", creator: "Marcus Thorne", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDB82r5i5VkcP5DEKmB7NFFcKAjrcbQomRX7yle7cj31mWeETTWcz2ygMWIPGtUZUAp57BF3iqUJExOMDofvxGmnCTgvqxskPv4680BRQTKWFB2llC8H0hgL1H1T35-qQupQM1ctgxCMHD3AHaiAWCb8UuQwKIUHbOTXm17z9c52hzNIY7ULwC1SJflKHpF7HPe0IqeR5Dztu8XzYq8lnfTi47_2V61eIJ-5wu8ZgPjFWYbG6L2-G4BjGHHe8pMbMaou1vo4sXzC1rr" }
+      { id: "terminal-mk2", name: "Terminal MK-II", meta: "OBJ • 8K Maps", category: "道具", price: "60 积分", creator: "Marcus Thorne", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDB82r5i5VkcP5DEKmB7NFFcKAjrcbQomRX7yle7cj31mWeETTWcz2ygMWIPGtUZUAp57BF3iqUJExOMDofvxGmnCTgvqxskPv4680BRQTKWFB2llC8H0hgL1H1T35-qQupQM1ctgxCMHD3AHaiAWCb8UuQwKIUHbOTXm17z9c52hzNIY7ULwC1SJflKHpF7HPe0IqeR5Dztu8XzYq8lnfTi47_2V61eIJ-5wu8ZgPjFWYbG6L2-G4BjGHHe8pMbMaou1vo4sXzC1rr" },
+      { id: "mecha-hangar-bay", name: "机甲机库场景", meta: "机库 / 冷色 / 体积光", category: "场景图", price: "160 积分", creator: "Marcus Thorne", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdH6WyohXnESBdFJDLR6riqwabx1rze5pixbieeJ_Bf23L_wQJ7l8dS5IO-J_p9ZV27-fHokgkr5AYMv8HXTAzmHNeVpJpeBwVQ8beVxzrtTQwE7PDJy7PAFH-HOGicr9gd0Fg8LnQCNgdAJ98LSHaEvJ3sVKZ8h_sAsMAi1yJr_j86MVBahKXce_kFxxhLTbdu15iVb1LhNTbmm6uFisLrJdVeFpr7-0Xc1IQU7cM5qXBbPJv6oCZSs7jbotmvDyyba4JELTIs_FG" },
+      { id: "orbital-shuttle", name: "轨道穿梭机", meta: "载具 / 硬表面 / 展示台", category: "道具", price: "140 积分", creator: "Elena Voss", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuANCDkIh8-bQbWpNLM0ixlhJcCz5oJuBBX2e5qAAVY7QlHeCNsvIz_OW1FP9RddaZCfm57n287yQ2ozeAxkMQbuVSdBCBQ8qqsvbrJvQb8VpsbETIdXROOuAjdooEoWLT782n_DWTO04tDagI2buMMr7-5CqpHGCg_vageoAbkplKL0pgwbQBdrhWTiiReDplww7656DGqks2UBAIoelU2wTl_kpresb3nvGavrKl7Gd1X66ebC1L6bftI8fSNleDEVrvuEMQnBdG_M" },
+      { id: "neo-alley-sequence", name: "霓虹街巷序列", meta: "城市 / 雨夜 / 长镜头", category: "场景图", price: "150 积分", creator: "Aria Jin", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB7903EgQexH-toZ4gGQjOCuBJNX4p301odfJoiKFhAHnMV-m8GNiGcqhBxKWhTyqH3GmKfehnEY_aezQPLiVzeiN-rr6i2XsqkKXpAbhOg6Vwq0A_6OdxfU5lh5nXFu0q_Xbdngbp_DQJxGAKNDwh9kB85FvpE05rKhlOQz1Ahlk4s6Qf4ECPgxkCtun-WC7D7WM5l421sZKYImigRdPBI6CON1c-fZgc4FTgTvLg6qhUri2hPmkVTaJ9Qk0Ir8RdBcnx8ta9T6fah" },
+      { id: "storyboard-epsilon", name: "Epsilon 分镜脚本", meta: "剧情板 / 过场 / 节奏设计", category: "Prompt", price: "85 积分", creator: "Aria Jin", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6faf56I5pihVezeYVoWFIjr23UebGjKG4UNEpf8COKtXTyvojr3UlRu7PhLN_zx54zhTSa3MylV1h7sPjB6PCVUKAhZSORuQuD2Xe37o_IcfhmBCi968F93A-1i6NHuOyLyP9sE7gczUtXyMLMkXZ7ArL2JBr3MHDMahY5PA7k4bpWS0wwB_DFHptnr6mCl9Py1-7nhVVJkm6xooOHUAUIC-EU76I0gWHYihQ73_nSalsJjhDbCmpM_qgVOpgg64ytOuPefl4cxX-" },
+      { id: "architectural-atrium", name: "极简中庭结构包", meta: "建筑 / 白模 / 透视参考", category: "场景图", price: "110 积分", creator: "Elena Voss", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD2uQGrYC9t7Qzyf_3ftO8u2S1_5SIJqht0Qx8mFeceKqjX9DYzNrWcvOkvB3-oZWY6_08ULVd_90s6ldfysS3zCdxGDHfUEd5uAkWZsqapO_z9tgr8_oVtWugWff4b3kYVKbGajxXz_niK0IC55kQpEbyBIlEfE2JrUTkHgKttvmy8haghqIOgLsfsFlQhfxWzkfxjl0BOSTX-tnD9dBt5EZ75oST7ForgY7MQwe86KZzAyu23wCcfsazAfutDkAQlnEY-oTTMcu8s" },
+      { id: "console-array-pro", name: "控制台阵列 Pro", meta: "终端 / UI 灯效 / 控制室", category: "道具", price: "95 积分", creator: "Marcus Thorne", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDB82r5i5VkcP5DEKmB7NFFcKAjrcbQomRX7yle7cj31mWeETTWcz2ygMWIPGtUZUAp57BF3iqUJExOMDofvxGmnCTgvqxskPv4680BRQTKWFB2llC8H0hgL1H1T35-qQupQM1ctgxCMHD3AHaiAWCb8UuQwKIUHbOTXm17z9c52hzNIY7ULwC1SJflKHpF7HPe0IqeR5Dztu8XzYq8lnfTi47_2V61eIJ-5wu8ZgPjFWYbG6L2-G4BjGHHe8pMbMaou1vo4sXzC1rr" }
     ],
     scenes: [
       { name: "竹林夜景", meta: "室外 • 冷色 • 武侠" },
@@ -146,6 +154,102 @@ window.SPARKS_CONTENT = {
         { label: "推荐用途", value: "控制室镜头" }
       ],
       notes: ["适合与赛博环境和控制室场景打包使用。", "更偏概念参考，正式商用前建议补更多视角。"]
+    },
+    "mecha-hangar-bay": {
+      title: "机甲机库场景",
+      subtitle: "冷色工业机库与体积光结合，适合机甲出场、维修与调度镜头。",
+      creatorId: "marcus-thorne",
+      price: "160 积分",
+      tags: ["场景图", "机库", "冷色", "体积光", "工业"],
+      prompt: "mecha hangar interior, volumetric light, cold industrial bay, cinematic scene reference, wide angle",
+      panels: ["主机库", "侧视机位", "吊装区", "维修台", "灯光脚本", "材质说明"],
+      similar: ["terminal-mk2", "river-dusk-suite"],
+      stats: [
+        { label: "机位变体", value: "5 组" },
+        { label: "已购项目", value: "13 个" },
+        { label: "推荐用途", value: "机甲出场" }
+      ],
+      notes: ["适合搭配硬表面道具与机甲角色。", "可直接用于高压工业氛围段落。"]
+    },
+    "orbital-shuttle": {
+      title: "轨道穿梭机",
+      subtitle: "带展示台和多角度参考的科幻穿梭机资产，适合载具特写与片头展示。",
+      creatorId: "elena-voss",
+      price: "140 积分",
+      tags: ["道具", "载具", "科幻", "穿梭机", "硬表面"],
+      prompt: "orbital shuttle concept, hard surface spacecraft, studio display platform, cinematic product showcase",
+      panels: ["主视角", "尾部推进", "俯视", "展示台", "材质脚本", "比例参考"],
+      similar: ["terminal-mk2", "mecha-hangar-bay"],
+      stats: [
+        { label: "视角数量", value: "6 组" },
+        { label: "已购项目", value: "9 个" },
+        { label: "推荐用途", value: "载具展示" }
+      ],
+      notes: ["适合片头载具展示和转场建立镜头。", "硬表面细节足够支持近景裁切。"]
+    },
+    "neo-alley-sequence": {
+      title: "霓虹街巷序列",
+      subtitle: "连续雨夜街巷镜头素材，适合都市赛博与潜行叙事。",
+      creatorId: "aria-jin",
+      price: "150 积分",
+      tags: ["场景图", "霓虹", "街巷", "雨夜", "都市"],
+      prompt: "neon alley cinematic sequence, rainy cyber city lane, moody reflections, long shot continuity",
+      panels: ["街口", "巷内", "灯牌近景", "湿地反光", "情绪色板", "镜头建议"],
+      similar: ["river-dusk-suite", "terminal-mk2"],
+      stats: [
+        { label: "连续镜头", value: "4 段" },
+        { label: "已购项目", value: "10 个" },
+        { label: "推荐用途", value: "都市过场" }
+      ],
+      notes: ["适合作为赛博都市章节的连续过场。", "适合叠加角色剪影和字幕信息。"]
+    },
+    "storyboard-epsilon": {
+      title: "Epsilon 分镜脚本",
+      subtitle: "围绕项目 Epsilon 的剧情节奏整理出的分镜脚本与 prompt 组合。",
+      creatorId: "aria-jin",
+      price: "85 积分",
+      tags: ["Prompt", "分镜脚本", "剧情", "节奏", "连续性"],
+      prompt: "cinematic storyboard sequence, act one structure, pacing guide, prompt pack for continuity",
+      panels: ["开场", "中段", "情绪推进", "角色转场", "镜头节奏", "prompt 组合"],
+      similar: ["han-robe-look", "neo-alley-sequence"],
+      stats: [
+        { label: "分镜段落", value: "12 段" },
+        { label: "已购项目", value: "8 个" },
+        { label: "推荐用途", value: "剧情设计" }
+      ],
+      notes: ["适合前期搭建项目节奏和镜头语言。", "可与环境素材打包使用提高统一性。"]
+    },
+    "architectural-atrium": {
+      title: "极简中庭结构包",
+      subtitle: "白模建筑中庭与透视参考，适合展览、品牌空间和未来室内镜头。",
+      creatorId: "elena-voss",
+      price: "110 积分",
+      tags: ["场景图", "建筑", "中庭", "白模", "透视"],
+      prompt: "minimal architectural atrium, white gallery interior, perspective study, cinematic space design",
+      panels: ["中庭主景", "立面透视", "俯视结构", "楼梯细节", "光线方案", "构图参考"],
+      similar: ["samurai-triptych", "orbital-shuttle"],
+      stats: [
+        { label: "结构视图", value: "5 组" },
+        { label: "已购项目", value: "6 个" },
+        { label: "推荐用途", value: "品牌空间" }
+      ],
+      notes: ["适合展厅、品牌空间和未来住宅镜头。", "白模构图很适合继续衍生材质版本。"]
+    },
+    "console-array-pro": {
+      title: "控制台阵列 Pro",
+      subtitle: "适合控制室、舰桥和监控区的终端阵列道具套件。",
+      creatorId: "marcus-thorne",
+      price: "95 积分",
+      tags: ["道具", "控制台", "舰桥", "监控", "终端"],
+      prompt: "console array prop kit, bridge control terminal, cinematic command center, UI glow accents",
+      panels: ["终端列阵", "侧面布局", "按键区", "灯效版本", "组合建议", "场景搭配"],
+      similar: ["terminal-mk2", "mecha-hangar-bay"],
+      stats: [
+        { label: "组合模块", value: "7 组" },
+        { label: "已购项目", value: "9 个" },
+        { label: "推荐用途", value: "舰桥控制室" }
+      ],
+      notes: ["适合做舰桥或监控区的主道具群。", "灯效版本适合切换告警状态。"]
     }
   },
   creators: {
@@ -160,7 +264,7 @@ window.SPARKS_CONTENT = {
       packs: ["角色三视图精选包", "神殿环境序列", "服装统一参考包"],
       friends: ["Marcus Thorne", "Aria Jin", "Nox Liang"],
       focus: ["角色一致性", "电影级构图", "剧情场景包"],
-      assets: ["samurai-triptych", "river-dusk-suite"],
+      assets: ["samurai-triptych", "architectural-atrium", "orbital-shuttle"],
       milestones: ["连续 6 周保持高通过率", "最新上传包进入热门推荐", "创作者合作请求 12 条"],
       workspace: ["角色包正在整理为可售卖合集", "河边场景正在补夜景桥段", "计划新增女主角定装系列"]
     },
@@ -175,7 +279,7 @@ window.SPARKS_CONTENT = {
       packs: ["动态环境过场包", "赛博道具合集", "夜景构图模板"],
       friends: ["Elena Voss", "Aria Jin", "Luca Moss"],
       focus: ["时间一致性", "环境叙事", "赛博道具"],
-      assets: ["river-dusk-suite", "terminal-mk2"],
+      assets: ["river-dusk-suite", "terminal-mk2", "mecha-hangar-bay", "console-array-pro"],
       milestones: ["新环境包下载率提升", "赛博道具合集进入编辑精选", "收到 3 个团队合作邀约"],
       workspace: ["正在打磨控制室道具扩展包", "夜景环境计划做 3 组光色变化", "准备整理镜头节奏参考文档"]
     },
@@ -190,7 +294,7 @@ window.SPARKS_CONTENT = {
       packs: ["古风定装合集", "面部妆造参考", "角色衣柜模板"],
       friends: ["Elena Voss", "Marcus Thorne", "Sena Ko"],
       focus: ["服装样式库", "角色妆造", "Prompt 组合"],
-      assets: ["han-robe-look"],
+      assets: ["han-robe-look", "neo-alley-sequence", "storyboard-epsilon"],
       milestones: ["首批素材正在等待审核", "主页资料完成度 92%", "已整理 4 组角色衣柜组合"],
       workspace: ["补齐发饰和鞋履细节参考", "优化古风服装关键词结构", "准备提交第二组妆造素材"]
     }
