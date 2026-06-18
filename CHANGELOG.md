@@ -2,6 +2,32 @@
 
 All notable changes to S-parks are documented in this file.
 
+## [6.0.0] - 2026-06-17
+
+### Release Ops
+
+- Prepare S-parks V6 as the in-place upgrade target for the existing live GitHub and Vercel release chain.
+- Rename the active repository and deployment project from `v5` to `v6` as part of the release handoff.
+- Keep the public test-account login path available during the V6 rollout until a later Supabase migration replaces it.
+
+### Routing And Page Expansion
+
+- Create a dedicated `#guide` route family for support topics, policy pages, and contact pages.
+- Convert support-center cards and footer policy links from placeholder jumps into real destination pages.
+- Extend the asset workflow so users can create a new project folder directly from the asset library.
+
+### UI And Interaction
+
+- Add real sort toggles and expandable workflow guidance to the asset library.
+- Strengthen borders, panel fills, and contrast across dark surfaces to reduce weak controls and text/background conflicts.
+- Preserve the existing S-parks visual language while filling in the missing destination pages with matching UI treatment.
+
+### Product Workflow
+
+- Keep `sparks-v5` untouched and continue the iteration in a copied `sparks-v6` workspace.
+- Add project-folder creation flow with immediate navigation into `#project`.
+- Update version references in the front-end shell and configuration to `v6.0.0`.
+
 ## [5.0.2] - 2026-06-15
 
 ### Release Ops

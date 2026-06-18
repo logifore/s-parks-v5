@@ -1,12 +1,14 @@
 "use strict";
 
 window.SparksRouter = ((content, renderers) => {
-  const routes = new Set([...content.nav, ...content.secondaryNav].map((item) => item.route));
+  const routeEntries = [...content.nav, ...content.secondaryNav, ...(content.hiddenRoutes || [])];
+  const routes = new Set(routeEntries.map((item) => item.route));
   const dynamicKeys = {
     detail: "asset",
     creator: "creator",
     project: "project",
-    licensing: "asset"
+    licensing: "asset",
+    guide: "guide"
   };
 
   function parseHash() {
@@ -52,7 +54,7 @@ window.SparksRouter = ((content, renderers) => {
   }
 
   function navLabel(route) {
-    const item = [...content.nav, ...content.secondaryNav].find((entry) => entry.route === route);
+    const item = routeEntries.find((entry) => entry.route === route);
     return item ? item.label : "发现";
   }
 

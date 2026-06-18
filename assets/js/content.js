@@ -22,8 +22,11 @@ window.SPARKS_CONTENT = {
     { route: "collections", label: "收藏夹", icon: "folder_special" },
     { route: "project", label: "项目夹详情", icon: "folder_open" }
   ],
+  hiddenRoutes: [
+    { route: "guide", label: "专题指南" }
+  ],
   home: {
-    eyebrow: "Specialized Success System Strategy Support Sparks",
+    eyebrow: "创作支持与素材策略",
     title: "S-parks 影像社区",
     accent: "创作者专享",
     intro: "为 AIGC 视频创作者提供角色、服装、场景、道具和提示词参考素材，让抽卡式创作变成可检索、可收藏、可授权的专业流程。",
@@ -69,7 +72,7 @@ window.SPARKS_CONTENT = {
   assets: {
     title: "素材库",
     subtitle: "参考 ShotDeck 式克制网格，把角色三视图、场景图、服装造型和道具资产统一为可搜索的 AIGC 视频素材库。",
-    filters: ["人物三视图", "场景图", "服装造型", "道具", "Prompt"],
+    filters: ["人物三视图", "场景图", "服装造型", "道具", "分镜脚本"],
     facets: ["分类", "风格", "光线", "色彩", "年代", "授权状态"],
     items: [
       { id: "samurai-triptych", name: "武士角色三视图", meta: "正面 / 侧面 / 背面", category: "人物三视图", price: "120 积分", creator: "Elena Voss", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAs2rPZzfnkJY6m1Pzhc8LoHsJcG2j-YLlMHKZWXaRp1CylamFt09bLrWb25XIi2bUD8jFDs2u0frXhIeDjuNHboJl50XR3InuCNbIY11Le_LHSmx02laCpECT55iW2KXaAcRaME_ykfrVVFyLlpjfFClug_QQJy1wBxql1M_b_JK1xutMjmGqaTWgguVl4Zygn2WpRv_XO0a8vQ4e_19LGR-0SJNhcci7QYTsrBebCZpQo1jPjXh_CgGSIs0UquUt9z0yYcsbx0gZQ" },
@@ -79,7 +82,7 @@ window.SPARKS_CONTENT = {
       { id: "mecha-hangar-bay", name: "机甲机库场景", meta: "机库 / 冷色 / 体积光", category: "场景图", price: "160 积分", creator: "Marcus Thorne", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdH6WyohXnESBdFJDLR6riqwabx1rze5pixbieeJ_Bf23L_wQJ7l8dS5IO-J_p9ZV27-fHokgkr5AYMv8HXTAzmHNeVpJpeBwVQ8beVxzrtTQwE7PDJy7PAFH-HOGicr9gd0Fg8LnQCNgdAJ98LSHaEvJ3sVKZ8h_sAsMAi1yJr_j86MVBahKXce_kFxxhLTbdu15iVb1LhNTbmm6uFisLrJdVeFpr7-0Xc1IQU7cM5qXBbPJv6oCZSs7jbotmvDyyba4JELTIs_FG" },
       { id: "orbital-shuttle", name: "轨道穿梭机", meta: "载具 / 硬表面 / 展示台", category: "道具", price: "140 积分", creator: "Elena Voss", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuANCDkIh8-bQbWpNLM0ixlhJcCz5oJuBBX2e5qAAVY7QlHeCNsvIz_OW1FP9RddaZCfm57n287yQ2ozeAxkMQbuVSdBCBQ8qqsvbrJvQb8VpsbETIdXROOuAjdooEoWLT782n_DWTO04tDagI2buMMr7-5CqpHGCg_vageoAbkplKL0pgwbQBdrhWTiiReDplww7656DGqks2UBAIoelU2wTl_kpresb3nvGavrKl7Gd1X66ebC1L6bftI8fSNleDEVrvuEMQnBdG_M" },
       { id: "neo-alley-sequence", name: "霓虹街巷序列", meta: "城市 / 雨夜 / 长镜头", category: "场景图", price: "150 积分", creator: "Aria Jin", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB7903EgQexH-toZ4gGQjOCuBJNX4p301odfJoiKFhAHnMV-m8GNiGcqhBxKWhTyqH3GmKfehnEY_aezQPLiVzeiN-rr6i2XsqkKXpAbhOg6Vwq0A_6OdxfU5lh5nXFu0q_Xbdngbp_DQJxGAKNDwh9kB85FvpE05rKhlOQz1Ahlk4s6Qf4ECPgxkCtun-WC7D7WM5l421sZKYImigRdPBI6CON1c-fZgc4FTgTvLg6qhUri2hPmkVTaJ9Qk0Ir8RdBcnx8ta9T6fah" },
-      { id: "storyboard-epsilon", name: "Epsilon 分镜脚本", meta: "剧情板 / 过场 / 节奏设计", category: "Prompt", price: "85 积分", creator: "Aria Jin", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6faf56I5pihVezeYVoWFIjr23UebGjKG4UNEpf8COKtXTyvojr3UlRu7PhLN_zx54zhTSa3MylV1h7sPjB6PCVUKAhZSORuQuD2Xe37o_IcfhmBCi968F93A-1i6NHuOyLyP9sE7gczUtXyMLMkXZ7ArL2JBr3MHDMahY5PA7k4bpWS0wwB_DFHptnr6mCl9Py1-7nhVVJkm6xooOHUAUIC-EU76I0gWHYihQ73_nSalsJjhDbCmpM_qgVOpgg64ytOuPefl4cxX-" },
+      { id: "storyboard-epsilon", name: "Epsilon 分镜脚本", meta: "剧情板 / 过场 / 节奏设计", category: "分镜脚本", price: "85 积分", creator: "Aria Jin", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6faf56I5pihVezeYVoWFIjr23UebGjKG4UNEpf8COKtXTyvojr3UlRu7PhLN_zx54zhTSa3MylV1h7sPjB6PCVUKAhZSORuQuD2Xe37o_IcfhmBCi968F93A-1i6NHuOyLyP9sE7gczUtXyMLMkXZ7ArL2JBr3MHDMahY5PA7k4bpWS0wwB_DFHptnr6mCl9Py1-7nhVVJkm6xooOHUAUIC-EU76I0gWHYihQ73_nSalsJjhDbCmpM_qgVOpgg64ytOuPefl4cxX-" },
       { id: "architectural-atrium", name: "极简中庭结构包", meta: "建筑 / 白模 / 透视参考", category: "场景图", price: "110 积分", creator: "Elena Voss", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD2uQGrYC9t7Qzyf_3ftO8u2S1_5SIJqht0Qx8mFeceKqjX9DYzNrWcvOkvB3-oZWY6_08ULVd_90s6ldfysS3zCdxGDHfUEd5uAkWZsqapO_z9tgr8_oVtWugWff4b3kYVKbGajxXz_niK0IC55kQpEbyBIlEfE2JrUTkHgKttvmy8haghqIOgLsfsFlQhfxWzkfxjl0BOSTX-tnD9dBt5EZ75oST7ForgY7MQwe86KZzAyu23wCcfsazAfutDkAQlnEY-oTTMcu8s" },
       { id: "console-array-pro", name: "控制台阵列 Pro", meta: "终端 / UI 灯效 / 控制室", category: "道具", price: "95 积分", creator: "Marcus Thorne", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDB82r5i5VkcP5DEKmB7NFFcKAjrcbQomRX7yle7cj31mWeETTWcz2ygMWIPGtUZUAp57BF3iqUJExOMDofvxGmnCTgvqxskPv4680BRQTKWFB2llC8H0hgL1H1T35-qQupQM1ctgxCMHD3AHaiAWCb8UuQwKIUHbOTXm17z9c52hzNIY7ULwC1SJflKHpF7HPe0IqeR5Dztu8XzYq8lnfTi47_2V61eIJ-5wu8ZgPjFWYbG6L2-G4BjGHHe8pMbMaou1vo4sXzC1rr" }
     ],
@@ -208,9 +211,9 @@ window.SPARKS_CONTENT = {
       subtitle: "围绕项目 Epsilon 的剧情节奏整理出的分镜脚本与 prompt 组合。",
       creatorId: "aria-jin",
       price: "85 积分",
-      tags: ["Prompt", "分镜脚本", "剧情", "节奏", "连续性"],
+      tags: ["提示词", "分镜脚本", "剧情", "节奏", "连续性"],
       prompt: "cinematic storyboard sequence, act one structure, pacing guide, prompt pack for continuity",
-      panels: ["开场", "中段", "情绪推进", "角色转场", "镜头节奏", "prompt 组合"],
+      panels: ["开场", "中段", "情绪推进", "角色转场", "镜头节奏", "提示词组合"],
       similar: ["han-robe-look", "neo-alley-sequence"],
       stats: [
         { label: "分镜段落", value: "12 段" },
@@ -293,7 +296,7 @@ window.SPARKS_CONTENT = {
       stats: { uploads: "32 个素材", revenue: "等待首批审核", followers: "2.7k 关注", rating: "审核中" },
       packs: ["古风定装合集", "面部妆造参考", "角色衣柜模板"],
       friends: ["Elena Voss", "Marcus Thorne", "Sena Ko"],
-      focus: ["服装样式库", "角色妆造", "Prompt 组合"],
+      focus: ["服装样式库", "角色妆造", "提示词组合"],
       assets: ["han-robe-look", "neo-alley-sequence", "storyboard-epsilon"],
       milestones: ["首批素材正在等待审核", "主页资料完成度 92%", "已整理 4 组角色衣柜组合"],
       workspace: ["补齐发饰和鞋履细节参考", "优化古风服装关键词结构", "准备提交第二组妆造素材"]
@@ -308,15 +311,250 @@ window.SPARKS_CONTENT = {
     title: "支持中心",
     subtitle: "围绕账户、上传、审核、授权和创作者收益提供帮助。正式商用前需要补充真实条款和申诉流程。",
     categories: [
-      { icon: "manage_accounts", title: "账户管理", text: "资料设置、密码恢复、个人主页和创作者身份认证。" },
-      { icon: "cloud_upload", title: "上传与资产", text: "文件格式、大小限制、标签规范、版权声明和素材优化建议。" },
-      { icon: "gavel", title: "审核与准则", text: "内容政策、审核流程、创作者行为准则以及违规举报。" }
+      { id: "account-management", icon: "manage_accounts", title: "账户管理", text: "资料设置、密码恢复、个人主页和创作者身份认证。" },
+      { id: "upload-assets", icon: "cloud_upload", title: "上传与资产", text: "文件格式、大小限制、标签规范、版权声明和素材优化建议。" },
+      { id: "review-rules", icon: "gavel", title: "审核与准则", text: "内容政策、审核流程、创作者行为准则以及违规举报。" }
     ],
     faq: [
       { question: "新用户积分如何发放？", answer: "原型设定为两周内每日赠送 100 积分，仅用于图片类型单个素材。" },
       { question: "素材为什么需要审核？", answer: "为了降低版权、低质量、重复内容和违规素材进入公开交易区的风险。" },
       { question: "正式上线前还缺什么？", answer: "真实认证、支付、授权协议、服务器校验、日志、限流和内容审核后台。" }
     ]
+  },
+  guides: {
+    "account-management": {
+      eyebrow: "账号与身份",
+      title: "账户管理中心",
+      subtitle: "围绕登录、身份识别、主页分流和账号安全整理出的操作说明。",
+      summary: "v6 把用户、创作者、管理员三种主页入口继续收拢到同一条账号动线上，同时为后续真实后端接入保留最清楚的状态说明和安全提醒。",
+      highlights: [
+        { label: "主页分流", value: "3 种角色" },
+        { label: "恢复入口", value: "账号 / 邮箱" },
+        { label: "风险提醒", value: "最少暴露" }
+      ],
+      checklist: [
+        "使用账号名或邮箱登录后自动识别角色。",
+        "登录成功后直接跳转到对应主页，不打断浏览动线。",
+        "原型阶段不保存敏感个人信息，也不写入真实支付数据。"
+      ],
+      sections: [
+        {
+          title: "账号访问与恢复",
+          points: ["统一账号入口，兼容游客浏览和角色化登录。", "正式上线后应由服务端接管密码重置、验证码和设备校验。"]
+        },
+        {
+          title: "角色主页分流",
+          points: ["普通用户进入个人主页。", "创作者进入自己的创作者空间。", "管理员直接进入审核工作台。"]
+        },
+        {
+          title: "安全建议",
+          points: ["不要在前端存长期有效的管理密钥。", "正式版需要最小权限、会话失效和登录审计。"]
+        }
+      ],
+      actions: [
+        { label: "前往登录", route: "auth", params: "" },
+        { label: "查看创作者主页", route: "creator", params: { creator: "elena-voss", tab: "works" } },
+        { label: "查看管理员审核台", route: "admin", params: "" }
+      ],
+      relatedAssets: ["samurai-triptych", "architectural-atrium"]
+    },
+    "upload-assets": {
+      eyebrow: "上传工作流",
+      title: "上传与资产规范",
+      subtitle: "把原本分散的上传说明、标签建议和售卖前检查整理成一个完整工作页。",
+      summary: "v6 延续工具型上传流程，但把素材分类、预览展示、版权声明和上架前检查做成更明确的结构，减少后续真实功能接入时的返工。",
+      highlights: [
+        { label: "上传步骤", value: "6 个阶段" },
+        { label: "预览维度", value: "封面 / 多图 / 提示词" },
+        { label: "风险项", value: "版权前置" }
+      ],
+      checklist: [
+        "标题、分类和标签需要一眼能被搜索到。",
+        "封面图与多图组要能反映素材真实用途。",
+        "版权来源、是否独家和模型说明必须前置。"
+      ],
+      sections: [
+        {
+          title: "内容结构",
+          points: ["先补基础信息，再补文件与预览。", "提示词、风格说明和标签要服务搜索与购买决策。"]
+        },
+        {
+          title: "上架前检查",
+          points: ["检查封面可读性和素材名称一致性。", "检查价格、授权边界和下载后的期望是否匹配。"]
+        },
+        {
+          title: "后续接入建议",
+          points: ["正式版需要服务端鉴权、文件校验和审核日志。", "高频上传动作建议加入队列和异步处理。"]
+        }
+      ],
+      actions: [
+        { label: "进入上传页", route: "upload", params: "" },
+        { label: "查看审核准则", route: "guide", params: "review-rules" },
+        { label: "浏览下载中心", route: "downloads", params: "" }
+      ],
+      relatedAssets: ["neo-alley-sequence", "storyboard-epsilon"]
+    },
+    "review-rules": {
+      eyebrow: "审核标准",
+      title: "审核与准则",
+      subtitle: "面向创作者和管理员的审核路径说明，覆盖待审核、补充资料与版权复核。",
+      summary: "为了避免旧版本里“审核入口有了但规范没落地”的问题，v6 把审核标准、状态说明和风险处理合并成统一页面，方便创作者和平台侧共用。",
+      highlights: [
+        { label: "审核状态", value: "3 类常见" },
+        { label: "平台目标", value: "降低违规" },
+        { label: "复核重点", value: "版权 / 标签" }
+      ],
+      checklist: [
+        "素材标题、分类和预览必须和实际内容一致。",
+        "存在版权疑点时优先进入补充或复核流程。",
+        "管理员操作需要保留审核理由和日志。"
+      ],
+      sections: [
+        {
+          title: "创作者侧准备",
+          points: ["补齐模型来源、授权边界和标签说明。", "避免重复、低质量或误导性封面。"]
+        },
+        {
+          title: "管理员侧动作",
+          points: ["通过、待补充、驳回三类动作要能快速切换。", "后续正式版要增加批量审核和复核留痕。"]
+        },
+        {
+          title: "平台上线前",
+          points: ["需要接入内容审核后台和申诉流程。", "需要补日志审计、限流和异常告警。"]
+        }
+      ],
+      actions: [
+        { label: "进入管理员主页", route: "admin", params: "" },
+        { label: "进入上传页", route: "upload", params: "" },
+        { label: "查看账户管理", route: "guide", params: "account-management" }
+      ],
+      relatedAssets: ["han-robe-look", "river-dusk-suite"]
+    },
+    "privacy-policy": {
+      eyebrow: "平台政策",
+      title: "隐私政策",
+      subtitle: "解释原型阶段收集什么、不收集什么，以及正式上线前必须补齐的隐私能力。",
+      summary: "当前仓库仍以纯前端原型为主，不引入真实支付、实名或后台管理私钥。v6 把相关说明拆成独立页面，避免继续把所有条款都塞在支持中心里。",
+      highlights: [
+        { label: "当前模式", value: "原型站点" },
+        { label: "敏感数据", value: "默认不入库" },
+        { label: "正式版必备", value: "权限控制" }
+      ],
+      checklist: [
+        "不在仓库中存放真实用户隐私和生产密钥。",
+        "登录与角色资料的演示数据只用于本地原型。",
+        "正式上线前补全数据删除、导出和访问控制能力。"
+      ],
+      sections: [
+        {
+          title: "当前原型约束",
+          points: ["只有公开测试账号和演示内容。", "页面中的动态文本均需转义，避免注入风险。"]
+        },
+        {
+          title: "正式版补充项",
+          points: ["需要服务端鉴权、权限隔离和密钥轮换。", "需要日志审计、最小权限和数据脱敏。"]
+        }
+      ],
+      actions: [
+        { label: "查看安全说明", route: "support", params: "" },
+        { label: "阅读服务条款", route: "guide", params: "terms-of-service" }
+      ],
+      relatedAssets: ["console-array-pro"]
+    },
+    "terms-of-service": {
+      eyebrow: "平台政策",
+      title: "服务条款",
+      subtitle: "梳理创作者上传、授权购买、账户使用和平台审核之间的责任边界。",
+      summary: "v6 把服务条款从页脚占位链接升级成独立信息页，方便后续继续填入真实法务条款，而不是让用户点击后只回到支持首页。",
+      highlights: [
+        { label: "用户角色", value: "游客 / 用户 / 创作者 / 管理员" },
+        { label: "关键边界", value: "上传 / 授权 / 审核" },
+        { label: "状态", value: "原型说明" }
+      ],
+      checklist: [
+        "购买授权范围需要清楚写明项目用途和下载边界。",
+        "创作者对上传内容的版权真实性负责。",
+        "平台保留对违规内容下架和复核的处理权。"
+      ],
+      sections: [
+        {
+          title: "账户使用",
+          points: ["不同角色只显示各自需要的功能入口。", "管理员权限不得暴露给普通用户或创作者。"]
+        },
+        {
+          title: "素材交易",
+          points: ["购买后应写入授权记录并生成下载状态。", "正式版必须补合同、支付和申诉流程。"]
+        }
+      ],
+      actions: [
+        { label: "查看下载中心", route: "downloads", params: "" },
+        { label: "查看审核准则", route: "guide", params: "review-rules" }
+      ],
+      relatedAssets: ["samurai-triptych", "river-dusk-suite"]
+    },
+    "cookie-policy": {
+      eyebrow: "平台政策",
+      title: "Cookie 政策",
+      subtitle: "说明当前站点如何使用本地存储与会话状态，以及未来正式版的追踪边界。",
+      summary: "当前原型只保留极少量前端登录状态，不引入第三方广告追踪。v6 用单独页面说明这一点，也为后续合规接入分析工具预留位置。",
+      highlights: [
+        { label: "当前存储", value: "最小会话" },
+        { label: "广告追踪", value: "未接入" },
+        { label: "后续建议", value: "显式授权" }
+      ],
+      checklist: [
+        "只保存必要的原型登录状态。",
+        "避免把敏感字段放进长期可读的本地存储。",
+        "正式版接入分析工具前要先明确授权和退出机制。"
+      ],
+      sections: [
+        {
+          title: "当前行为",
+          points: ["本地仅保留基础会话恢复信息。", "不依赖第三方广告网络或跨站追踪脚本。"]
+        },
+        {
+          title: "正式版建议",
+          points: ["把会话和权限转到服务端管理。", "增加同意管理、用途说明和失效策略。"]
+        }
+      ],
+      actions: [
+        { label: "查看隐私政策", route: "guide", params: "privacy-policy" },
+        { label: "返回支持中心", route: "support", params: "" }
+      ],
+      relatedAssets: ["terminal-mk2"]
+    },
+    "contact-team": {
+      eyebrow: "支持与联系",
+      title: "联系我们",
+      subtitle: "把创作者咨询、审核协助和商务合作入口整理成清晰的联系页。",
+      summary: "v6 先用原型化方式定义联络入口和响应分工，后续无论接表单、邮箱还是 CRM，都能沿用同一套版式继续扩展。",
+      highlights: [
+        { label: "响应分工", value: "3 类入口" },
+        { label: "优先场景", value: "审核 / 商务 / 协作" },
+        { label: "当前状态", value: "原型联络页" }
+      ],
+      checklist: [
+        "审核问题优先走支持与准则页面。",
+        "创作者合作优先走创作者申请和社区主页。",
+        "正式版应补真实工单、邮箱和状态回执。"
+      ],
+      sections: [
+        {
+          title: "合作咨询",
+          points: ["适合创作者招募、素材联名和项目合作。", "建议和社区主页联动展示创作者能力。"]
+        },
+        {
+          title: "问题反馈",
+          points: ["账户、上传和审核问题先按专题页自助排查。", "正式版应补工单编号和处理状态。"]
+        }
+      ],
+      actions: [
+        { label: "进入创作者社区", route: "community", params: "" },
+        { label: "申请成为创作者", route: "creator-onboarding", params: "" },
+        { label: "返回支持中心", route: "support", params: "" }
+      ],
+      relatedAssets: ["architectural-atrium", "neo-alley-sequence"]
+    }
   },
   flows: {
     upload: {
@@ -325,7 +563,7 @@ window.SPARKS_CONTENT = {
       steps: [
         { key: "basic", label: "基础信息", fields: ["素材类型", "标题", "一句话说明"] },
         { key: "files", label: "文件与预览", fields: ["封面图", "多图组", "画幅比例"] },
-        { key: "prompt", label: "标签与 Prompt", fields: ["关键词标签", "Prompt", "风格说明"] },
+        { key: "prompt", label: "标签与提示词", fields: ["关键词标签", "提示词", "风格说明"] },
         { key: "rights", label: "版权声明", fields: ["模型来源", "版权确认", "是否独家"] },
         { key: "pricing", label: "定价方案", fields: ["单张价格", "打包策略", "公开售卖"] },
         { key: "review", label: "预览提交", fields: ["提交审核", "返回修改", "风险提示"] }
@@ -338,7 +576,7 @@ window.SPARKS_CONTENT = {
     },
     auth: {
       title: "注册 / 登录",
-      subtitle: "V5 开始接入真实账号认证，支持账号名或邮箱登录，并按角色进入不同的个人主页。",
+      subtitle: "V6 开始把真实账号认证、角色主页分流和状态说明继续打磨成更完整的使用闭环。",
       steps: ["账号登录", "读取角色资料", "进入对应主页", "保持登录态"]
     },
     licensing: {
@@ -348,11 +586,11 @@ window.SPARKS_CONTENT = {
     },
     membership: {
       title: "积分会员",
-      subtitle: "新用户每日赠送积分，Plus / Pro 会员按月获得更高额度。",
+      subtitle: "新用户每日赠送积分，进阶版 / 专业版会员按月获得更高额度。",
       tiers: [
-        { name: "Trial", points: "100 / 日", note: "注册后两周，仅图片单素材" },
-        { name: "Plus", points: "10,000 / 月", note: "适合个人短剧创作者" },
-        { name: "Pro", points: "30,000 / 月", note: "适合团队与批量制作" }
+        { name: "体验版", points: "100 / 日", note: "注册后两周，仅图片单素材" },
+        { name: "进阶版", points: "10,000 / 月", note: "适合个人短剧创作者" },
+        { name: "专业版", points: "30,000 / 月", note: "适合团队与批量制作" }
       ]
     },
     admin: {

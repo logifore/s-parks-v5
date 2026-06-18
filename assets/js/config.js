@@ -1,8 +1,8 @@
 "use strict";
 
 window.SPARKS_CONFIG = {
-  version: "sparks-v5.0.2",
-  authStorageKey: "sparks-v5-session",
+  version: "sparks-v6.0.0",
+  authStorageKey: "sparks-v6-session",
   localAuthFallbackEnabled: true,
   localAccounts: [
     {

@@ -7,6 +7,7 @@ window.SparksRenderers = ((utils) => {
   const DEFAULT_ASSET = content.assets.items[0];
   const DEFAULT_CREATOR_ID = content.community.people[0];
   const DEFAULT_PROJECT_ID = "short-drama-a";
+  const DEFAULT_GUIDE_ID = "account-management";
 
   const sceneVariants = {
     day: {
@@ -32,6 +33,12 @@ window.SparksRenderers = ((utils) => {
     creator: "创作者",
     admin: "管理员"
   };
+  const CREATOR_STAT_LABELS = {
+    uploads: "上传素材",
+    revenue: "本月授权",
+    followers: "关注者",
+    rating: "通过率"
+  };
 
   function getAssetById(assetId) {
     return content.assets.items.find((item) => item.id === assetId) || DEFAULT_ASSET;
@@ -45,12 +52,20 @@ window.SparksRenderers = ((utils) => {
     return projects[projectId] || projects[DEFAULT_PROJECT_ID];
   }
 
+  function getGuideById(guideId) {
+    return content.guides[guideId] || content.guides[DEFAULT_GUIDE_ID];
+  }
+
   function getAuthProfile(state) {
     return state.authProfile || null;
   }
 
   function getRoleLabel(role) {
     return ROLE_LABELS[role] || ROLE_LABELS.user;
+  }
+
+  function creatorStatLabel(label) {
+    return CREATOR_STAT_LABELS[label] || label;
   }
 
   function isCreatorOwner(state, creatorId) {
@@ -144,7 +159,7 @@ window.SparksRenderers = ((utils) => {
         <a class="creator-work-card creator-work-card-upload" href="#upload">
           <div class="creator-work-upload">
             ${icon("add")}
-            <span>Upload New Work</span>
+            <span>上传新作品</span>
           </div>
         </a>
       </div>
@@ -188,6 +203,25 @@ window.SparksRenderers = ((utils) => {
     return map[category] || "folder";
   }
 
+  function sortAssets(items, mode) {
+    const sorted = [...items];
+    const getPrice = (asset) => Number.parseInt(asset.price, 10) || 0;
+    if (mode === "latest") return sorted.reverse();
+    if (mode === "price-desc") return sorted.sort((a, b) => getPrice(b) - getPrice(a));
+    if (mode === "price-asc") return sorted.sort((a, b) => getPrice(a) - getPrice(b));
+    return sorted;
+  }
+
+  function sortLabel(mode) {
+    const labels = {
+      featured: "精选排序",
+      latest: "最新上传",
+      "price-desc": "积分从高到低",
+      "price-asc": "积分从低到高"
+    };
+    return labels[mode] || labels.featured;
+  }
+
   function renderCreatorOnboarding(appContent) {
     const benefits = [
       {
@@ -218,19 +252,19 @@ window.SparksRenderers = ((utils) => {
     const showcaseAssets = [
       {
         asset: getAssetById("architectural-atrium"),
-        eyebrow: "Featured Space Pack",
+        eyebrow: "精选空间套组",
         title: "极简中庭结构包",
         note: "白模建筑、透视参考与品牌空间镜头，一次锁定展示级空间语言。"
       },
       {
         asset: getAssetById("samurai-triptych"),
-        eyebrow: "Character System",
+        eyebrow: "角色系统",
         title: "角色一致性模板",
         note: "三视图 + 服装细节"
       },
       {
         asset: getAssetById("orbital-shuttle"),
-        eyebrow: "Studio Delivery",
+        eyebrow: "商业交付",
         title: "商业级载具规范",
         note: "展示台、材质脚本、硬表面拆解"
       }
@@ -310,7 +344,7 @@ window.SparksRenderers = ((utils) => {
               <div class="profile-identity-main">
                 <div class="account-avatar">${image("https://lh3.googleusercontent.com/aida-public/AB6AXuBl8whoU5MlIADYjJiOYQoBI2AAqeaFfBwFyBKVOHXyic5TlVsXl26WlsWzTeXdwuO1x8D1goEHUbNzeojIxQ1UOjmVGu2G3zzRL85LLHsBXxMjOoIy22ZSwN1TShvPC5Xn6LsA2gjcGl3xvC-OUM28MqwfDsmH3g6eeKMtBTbM-30EOkGoV6UmAXaLDMO0OXMCgG7H5_cqd6SWR6IfqpGmPm2B0VwTWQMCiPY4E5U6SPrgJGo6BS6Le1nPBHTC8ieblPVKvdfL8jYd", "account", "account-avatar-image")}</div>
                 <div class="profile-identity-copy">
-                  <span class="eyebrow profile-kicker">Account Access</span>
+                  <span class="eyebrow profile-kicker">账号入口</span>
                   <h1>欢迎回来</h1>
                   <p class="profile-identity-primary">登录后继续查看已购素材、项目夹和账号设置。</p>
                   <div class="profile-identity-meta">
@@ -321,9 +355,9 @@ window.SparksRenderers = ((utils) => {
               </div>
             </article>
             <article class="account-creator-frame profile-surface-card profile-spotlight-card">
-              <span class="eyebrow">Account Access</span>
+              <span class="eyebrow">账号入口</span>
               <h2>先登录再进入个人主页</h2>
-              <p>V5 已经切到真实账号登录，普通用户、创作者和管理员会进入各自对应的主页。</p>
+              <p>v6 已经切到真实账号登录，普通用户、创作者和管理员会进入各自对应的主页。</p>
               <div class="account-entry-actions">
                 <a class="button button-primary" href="#auth">前往登录</a>
                 <a class="button button-ghost" href="#creator-onboarding">立即申请</a>
@@ -363,7 +397,7 @@ window.SparksRenderers = ((utils) => {
             ${renderProfileActions("profile-page-actions-inline")}
           </article>
           <article class="account-creator-frame profile-surface-card profile-spotlight-card">
-            <span class="eyebrow">Creator Program</span>
+            <span class="eyebrow">创作者计划</span>
             <h2>申请成为创作者</h2>
             <p>你现在使用的是真实账号登录。后续可继续把普通用户升级为创作者，沿用当前站内浏览、收藏和上传流程。</p>
             <div class="account-entry-actions">
@@ -430,15 +464,15 @@ window.SparksRenderers = ((utils) => {
           <div class="home-massive-type" aria-hidden="true">S-PARKS</div>
           <div class="home-hero-copy">
             <h1>S-PARKS<br><span>${escapeHtml(home.accent)}</span></h1>
-            <p>创作者专享 / FOR CREATORS</p>
+            <p>创作者专享 / 创作入口</p>
             <div class="hero-actions hero-actions-left">${actions}</div>
           </div>
-          <a class="home-scroll-cue" href="#community">SCROLL DOWN</a>
+          <a class="home-scroll-cue" href="#community">向下浏览</a>
         </section>
 
         <section class="home-vision">
           <div class="home-vision-copy">
-            <span class="eyebrow">核心愿景 / Core Vision</span>
+            <span class="eyebrow">核心愿景</span>
             <h2>多维素材<br><span>重塑创作</span></h2>
             <p>提供 AIGC 专业级角色三视图、分镜故事板、高精度场景图以及完整的短片资产体系，助力创作者从灵感到成片的跨越。</p>
           </div>
@@ -459,7 +493,7 @@ window.SparksRenderers = ((utils) => {
 
         <section class="section-band home-creators">
           <div class="section-title">
-            <span class="eyebrow">Featured</span>
+            <span class="eyebrow">精选创作者</span>
             <h2>创作者推荐</h2>
             <a href="#community">查看全部 ${icon("arrow_right_alt")}</a>
           </div>
@@ -479,7 +513,7 @@ window.SparksRenderers = ((utils) => {
 
         <section class="section-band home-feature-band">
           <div class="section-title">
-            <span class="eyebrow">Functions</span>
+            <span class="eyebrow">功能入口</span>
             <h2>功能入口</h2>
           </div>
           <div class="home-feature-grid">
@@ -501,16 +535,17 @@ window.SparksRenderers = ((utils) => {
     const categories = ["全部", "角色", "环境", "载具", "分镜脚本"];
     const selected = state.selectedCategory || "全部";
     const query = state.query.trim().toLowerCase();
-    const matches = assets.items.filter((asset) => {
+    const matches = sortAssets(assets.items.filter((asset) => {
       const type = refineAssetType(asset.category);
       const target = `${asset.name} ${asset.meta} ${asset.category} ${type} ${asset.creator}`.toLowerCase();
       const categoryMatch = selected === "全部" || type === selected;
       return categoryMatch && (!query || target.includes(query));
-    });
+    }), state.assetSort);
 
     const searchHref = hrefFor("search", {
       q: state.query.trim(),
-      category: selected === "全部" ? "" : selected
+      category: selected === "全部" ? "" : selected,
+      sort: state.assetSort === "featured" ? "" : state.assetSort
     });
     const body = `
       <div class="control-bar control-bar-v4" role="region" aria-label="素材筛选">
@@ -519,6 +554,24 @@ window.SparksRenderers = ((utils) => {
         </div>
         <a class="button button-primary compact" href="${escapeHtml(searchHref)}">${icon("tune")} 高级筛选</a>
       </div>
+      <div class="asset-tools-bar glass-panel">
+        <button class="button button-ghost compact" type="button" data-action="toggle-asset-tools">${icon("dashboard_customize")} ${state.assetToolsOpen ? "收起筛选建议" : "展开筛选建议"}</button>
+        <button class="button button-ghost compact" type="button" data-action="toggle-asset-sort">${icon("swap_vert")} ${escapeHtml(sortLabel(state.assetSort))}</button>
+      </div>
+      ${state.assetToolsOpen ? `
+        <section class="asset-tools-panel glass-panel">
+          <div>
+            <span class="eyebrow">筛选建议</span>
+            <h3>优先把分类、关键词和项目夹联动起来</h3>
+            <p>v6 把之前停留在视觉层的工具按钮落成真实交互：你可以直接切换排序、保留当前筛选条件，并把当前浏览上下文快速沉淀到项目夹。</p>
+          </div>
+          <div class="asset-tools-actions">
+            <button class="button button-primary compact" type="button" data-action="create-project">${icon("create_new_folder")} 新建项目夹</button>
+            <a class="button button-ghost compact" href="${escapeHtml(hrefFor("guide", "upload-assets"))}">${icon("menu_book")} 上传规范</a>
+            <a class="button button-ghost compact" href="${escapeHtml(hrefFor("guide", "review-rules"))}">${icon("verified")} 审核准则</a>
+          </div>
+        </section>
+      ` : ""}
       <div class="chips" aria-label="筛选维度">
         ${assets.facets.map((filter) => `<span>${escapeHtml(filter)}</span>`).join("")}
       </div>
@@ -532,9 +585,9 @@ window.SparksRenderers = ((utils) => {
       </div>
       <section class="scene-strip scene-strip-v4">
         <div class="section-title">
-          <span class="eyebrow">Scene Variants</span>
-          <h2>时间切换和构图一致性继续保留，并升级成更像精选陈列</h2>
-          <p>原版的场景切换能力继续可用，V5 这一轮重点加入角色登录结构、管理员工作台和更完整的账号分流体验。</p>
+          <span class="eyebrow">场景变体</span>
+          <h2>时间切换与构图一致性继续保留，并升级成可继续扩展的精选陈列</h2>
+          <p>原版的场景切换能力继续可用，v6 这一轮进一步把筛选、项目夹和支持专题接成一个更完整的工作流。</p>
         </div>
         <div class="scene-grid">
           ${assets.scenes.map((scene) => `<article class="glass-panel scene-card"><h3>${escapeHtml(scene.name)}</h3><p>${escapeHtml(scene.meta)}</p></article>`).join("")}
@@ -543,49 +596,66 @@ window.SparksRenderers = ((utils) => {
     `;
 
     if (!includeShell) return body;
-    return pageShell("Assets", assets.title, assets.subtitle, body, "assets-page");
+    return pageShell("素材库", assets.title, assets.subtitle, body, "assets-page");
   }
 
   function renderAssets(appContent, state) {
     const selected = state.selectedCategory || "全部";
     const query = state.query.trim().toLowerCase();
     const categories = ["全部", "角色", "环境", "载具", "分镜脚本"];
-    const matches = appContent.assets.items.filter((asset) => {
+    const matches = sortAssets(appContent.assets.items.filter((asset) => {
       const type = refineAssetType(asset.category);
       const target = `${asset.name} ${asset.meta} ${asset.category} ${type}`.toLowerCase();
       const categoryMatch = selected === "全部" || type === selected;
       return categoryMatch && (!query || target.includes(query));
-    });
+    }), state.assetSort);
     const displayCards = [...matches];
     while (displayCards.length < 4) displayCards.push(null);
     return pageShell("素材库", appContent.assets.title, appContent.assets.subtitle, `
       <section class="asset-library-shell">
-        <aside class="asset-sidebar">
-          <div class="asset-sidebar-head">
-            ${icon("folder")}
-            <div><strong>资产分类</strong><span>Asset Categories</span></div>
-          </div>
-          <div class="asset-category-list">
-            ${categories.map((category) => `
-              <button class="asset-category-item ${selected === category ? "active" : ""}" type="button" ${pressedAttr(selected === category)} data-action="filter-category" data-category="${escapeHtml(category)}">
-                ${icon(assetCategoryIcon(category))}
-                <span>${escapeHtml(category)}</span>
-              </button>
-            `).join("")}
-          </div>
-          <div class="asset-sidebar-bottom">
-            <button class="asset-create-category" type="button">${icon("add")} 新建分类</button>
-            <a href="#collections">${icon("folder_special")} 回收站</a>
-            <a href="#support">${icon("help")} 帮助中心</a>
-          </div>
-        </aside>
+        <div class="asset-sidebar-column">
+          <aside class="asset-sidebar">
+            <div class="asset-sidebar-head">
+              ${icon("folder")}
+              <div><strong>资产分类</strong><span>素材分区</span></div>
+            </div>
+            <div class="asset-category-list">
+              ${categories.map((category) => `
+                <button class="asset-category-item ${selected === category ? "active" : ""}" type="button" ${pressedAttr(selected === category)} data-action="filter-category" data-category="${escapeHtml(category)}">
+                  ${icon(assetCategoryIcon(category))}
+                  <span>${escapeHtml(category)}</span>
+                </button>
+              `).join("")}
+            </div>
+            <div class="asset-sidebar-bottom">
+              <button class="asset-create-category" type="button" data-action="create-project">${icon("add")} 新建项目夹</button>
+            </div>
+            <div class="asset-sidebar-quicklinks" aria-label="素材页快捷入口">
+              <a href="#collections">${icon("folder_special")} 项目总览</a>
+              <a href="#support">${icon("help")} 帮助中心</a>
+            </div>
+          </aside>
+        </div>
         <div class="asset-library-main">
           <div class="asset-library-toolbar">
             <div class="asset-library-actions">
-              <button class="button button-ghost compact asset-toolbar-button" type="button">${icon("filter_list")} 筛选</button>
-              <button class="button button-ghost compact asset-toolbar-button" type="button">${icon("sort")} 最新上传</button>
+              <button class="button button-ghost compact asset-toolbar-button" type="button" data-action="toggle-asset-tools">${icon("filter_list")} ${state.assetToolsOpen ? "收起建议" : "筛选建议"}</button>
+              <button class="button button-ghost compact asset-toolbar-button" type="button" data-action="toggle-asset-sort">${icon("sort")} ${escapeHtml(sortLabel(state.assetSort))}</button>
             </div>
           </div>
+          ${state.assetToolsOpen ? `
+            <section class="asset-library-panel glass-panel">
+              <div>
+                <span class="eyebrow">工作流补全</span>
+                <h3>把筛选、项目夹和帮助文档连成一条线</h3>
+                <p>你现在可以从素材库直接创建项目夹，并跳到上传规范或审核准则，不再是只能看到按钮却没有后续页面。</p>
+              </div>
+              <div class="asset-tools-actions">
+                <button class="button button-primary compact" type="button" data-action="create-project">${icon("create_new_folder")} 新建项目夹</button>
+                <a class="button button-ghost compact" href="${escapeHtml(hrefFor("guide", "upload-assets"))}">${icon("menu_book")} 上传规范</a>
+              </div>
+            </section>
+          ` : ""}
           <div class="asset-library-grid">
             ${displayCards.map((asset) => asset ? `
               <a class="asset-library-card" href="${escapeHtml(hrefFor("detail", asset.id))}" data-action="open-detail" data-asset="${escapeHtml(asset.id)}">
@@ -593,7 +663,7 @@ window.SparksRenderers = ((utils) => {
               </a>
             ` : `
               <article class="asset-library-card asset-library-card-placeholder" aria-hidden="true">
-                <div class="asset-pending">Asset Render Pending</div>
+                <div class="asset-pending">等待补充素材</div>
               </article>
             `).join("")}
           </div>
@@ -633,7 +703,7 @@ window.SparksRenderers = ((utils) => {
         </div>
       </section>
     `;
-    return pageShell("Community", community.title, community.subtitle, body, "community-page community-page-v4");
+    return pageShell("创作者社区", community.title, community.subtitle, body, "community-page community-page-v4");
   }
 
   function renderSupport(appContent) {
@@ -643,7 +713,7 @@ window.SparksRenderers = ((utils) => {
         <header class="support-hero">
           <h1>${escapeHtml(support.title)}</h1>
           <p>${escapeHtml(support.subtitle)}</p>
-          <form class="support-search" role="search">
+          <form class="support-search" role="search" data-support-search>
             ${icon("search")}
             <input type="search" placeholder="搜索问题..." aria-label="搜索问题">
             <button class="button button-primary compact" type="submit">搜索</button>
@@ -651,7 +721,7 @@ window.SparksRenderers = ((utils) => {
         </header>
         <div class="support-grid-v4">
           ${support.categories.map((category) => `
-            <a class="support-card-v4" href="#support">
+            <a class="support-card-v4" href="${escapeHtml(hrefFor("guide", category.id))}">
               <span class="support-icon">${icon(category.icon)}</span>
               <h2>${escapeHtml(category.title)}</h2>
               <p>${escapeHtml(category.text)}</p>
@@ -659,6 +729,20 @@ window.SparksRenderers = ((utils) => {
             </a>
           `).join("")}
         </div>
+        <section class="support-links-grid">
+          ${[
+            ["privacy-policy", "隐私政策", "shield"],
+            ["terms-of-service", "服务条款", "gavel"],
+            ["cookie-policy", "Cookie 政策", "cookie"],
+            ["contact-team", "联系我们", "mail"]
+          ].map(([id, label, iconName]) => `
+            <a class="support-link-card glass-panel" href="${escapeHtml(hrefFor("guide", id))}">
+              ${icon(iconName)}
+              <strong>${escapeHtml(label)}</strong>
+              <span>进入独立说明页</span>
+            </a>
+          `).join("")}
+        </section>
         <section class="faq-section-v4">
           <div class="section-title">
             <span class="eyebrow">FAQ</span>
@@ -675,7 +759,7 @@ window.SparksRenderers = ((utils) => {
         </section>
       </section>
     `;
-    return pageShell("Support", support.title, support.subtitle, body, "support-page support-page-v4");
+    return pageShell("支持中心", support.title, support.subtitle, body, "support-page support-page-v4");
   }
 
   function renderDetail(appContent, state) {
@@ -708,7 +792,7 @@ window.SparksRenderers = ((utils) => {
             </div>
             <a class="button button-ghost compact" href="${escapeHtml(hrefFor("creator", detail.creatorId))}" data-action="open-creator" data-creator="${escapeHtml(detail.creatorId)}">查看主页</a>
           </div>
-          <h2>Prompt</h2>
+          <h2>提示词</h2>
           <p class="prompt-box">${escapeHtml(detail.prompt)}</p>
           <div class="detail-stats">
             ${detail.stats.map((item) => `<article class="glass-panel metric-panel compact-metric"><span class="eyebrow">${escapeHtml(item.label)}</span><h3>${escapeHtml(item.value)}</h3></article>`).join("")}
@@ -724,7 +808,7 @@ window.SparksRenderers = ((utils) => {
         </aside>
       </div>
       <div class="panel-grid">
-        ${detail.panels.map((panel) => `<article class="glass-panel scene-card"><h3>${escapeHtml(panel)}</h3><p>未来这里接入多图组预览、下载权限和版权记录。</p></article>`).join("")}
+        ${detail.panels.map((panel, index) => `<article class="glass-panel scene-card"><h3>${escapeHtml(panel)}</h3><p>${index % 2 === 0 ? "当前以原型方式展示镜头分区，后续可继续扩展为多图组、构图说明和版本差异。" : "这里已经不再是空白占位说明，而是为后续接版权记录、下载状态和使用备注预留了稳定模块。 "}</p></article>`).join("")}
       </div>
       <section class="scene-strip">
         <div class="section-title">
@@ -747,9 +831,9 @@ window.SparksRenderers = ((utils) => {
     const ownerBanner = ownerView ? `
       <section class="glass-panel creator-owner-banner">
         <div>
-          <span class="eyebrow">Creator Workspace</span>
+          <span class="eyebrow">创作者工作台</span>
           <h2>这是你的创作者主页</h2>
-          <p>V5 会在保留原主页视觉的前提下，把上传、收益、审核状态和作品管理整合进来。</p>
+          <p>v6 会在保留原主页视觉的前提下，把上传、收益、审核状态和作品管理整合进来。</p>
         </div>
         <div class="creator-owner-grid">
           <article>
@@ -779,14 +863,14 @@ window.SparksRenderers = ((utils) => {
             ${image(creator.image, creator.name, "creator-hero-avatar-image")}
           </div>
           <div class="creator-hero-copy">
-            <span class="eyebrow profile-kicker">Creator Archive</span>
+            <span class="eyebrow profile-kicker">创作者档案</span>
             <h1>${escapeHtml(creator.name)}</h1>
             <p>${escapeHtml(creator.bio)}</p>
             <div class="creator-hero-stats">
               ${Object.entries(creator.stats).map(([label, value]) => `
                 <article class="creator-stat-card creator-stat-card-dark">
                   <strong>${escapeHtml(value)}</strong>
-                  <span>${escapeHtml(label)}</span>
+                  <span>${escapeHtml(creatorStatLabel(label))}</span>
                 </article>
               `).join("")}
             </div>
@@ -802,9 +886,9 @@ window.SparksRenderers = ((utils) => {
 
         <section class="creator-tools-banner">
           <div>
-            <span class="eyebrow profile-kicker">${ownerView ? "Workspace Ready" : "Creator Upgrade"}</span>
-            <h2>${ownerView ? "你的工作台已启用" : "Unlock Studio Tools"}</h2>
-            <p>${ownerView ? "继续沿用你原本的创作者主页风格，同时把上传、审核与收益入口放进同一页面。" : "Join the creator program to access advanced rendering nodes, commercial licensing, and monetization features."}</p>
+            <span class="eyebrow profile-kicker">${ownerView ? "工作台已启用" : "创作者升级"}</span>
+            <h2>${ownerView ? "你的工作台已启用" : "解锁创作者工作流"}</h2>
+            <p>${ownerView ? "继续沿用你原本的创作者主页风格，同时把上传、审核与收益入口放进同一页面。" : "加入创作者计划后，可以继续使用更完整的上传、授权与收益工作流。 "}</p>
           </div>
           <a class="button button-primary" href="${ownerView ? "#upload" : "#creator-onboarding"}">${ownerView ? "继续上传" : "成为创作者"}</a>
         </section>
@@ -844,7 +928,7 @@ window.SparksRenderers = ((utils) => {
           <header class="creator-studio-hero">
             <div class="creator-studio-avatar">${image(creator.image, creator.name, "creator-studio-avatar-image")}</div>
             <div class="creator-studio-copy">
-              <span class="eyebrow profile-kicker">Creator Studio</span>
+              <span class="eyebrow profile-kicker">创作者工作室</span>
               <h1>${escapeHtml(creator.name)}</h1>
               <p>${escapeHtml(creator.bio)}</p>
               <div class="chips">${creator.focus.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
@@ -864,10 +948,10 @@ window.SparksRenderers = ((utils) => {
               ["累计收益", "￥89,400"]
             ].map(([label, value]) => `<article class="creator-metric-card"><span>${label}</span><strong>${value}</strong></article>`).join("")}
           </div>
-          <nav class="creator-studio-tabs" aria-label="Creator workspace tabs">
-            <button class="${tab === "works" ? "active" : ""}" type="button" ${pressedAttr(tab === "works")} data-action="set-creator-tab" data-tab="works">My Works</button>
-            <button class="${tab === "assets" ? "active" : ""}" type="button" ${pressedAttr(tab === "assets")} data-action="set-creator-tab" data-tab="assets">Shared Assets</button>
-            <button class="${tab === "collections" ? "active" : ""}" type="button" ${pressedAttr(tab === "collections")} data-action="set-creator-tab" data-tab="collections">Collections</button>
+          <nav class="creator-studio-tabs" aria-label="创作者工作台切换">
+            <button class="${tab === "works" ? "active" : ""}" type="button" ${pressedAttr(tab === "works")} data-action="set-creator-tab" data-tab="works">个人作品</button>
+            <button class="${tab === "assets" ? "active" : ""}" type="button" ${pressedAttr(tab === "assets")} data-action="set-creator-tab" data-tab="assets">已上传素材</button>
+            <button class="${tab === "collections" ? "active" : ""}" type="button" ${pressedAttr(tab === "collections")} data-action="set-creator-tab" data-tab="collections">收藏</button>
           </nav>
           ${tab === "works" ? creatorWorkCards(creator) : ""}
           ${tab === "assets" ? `<div class="creator-assets-list">${creator.assets.map((id) => {
@@ -884,12 +968,12 @@ window.SparksRenderers = ((utils) => {
         <header class="creator-gallery-hero">
           <div class="creator-gallery-avatar">${image(creator.image, creator.name, "creator-gallery-avatar-image")}</div>
           <div class="creator-gallery-copy">
-            <span class="eyebrow profile-kicker">Curated Portfolio</span>
+            <span class="eyebrow profile-kicker">精选作品集</span>
             <h1>${escapeHtml(creator.name)}</h1>
-            <p>${escapeHtml(creator.role)} · Stockholm, SE</p>
+            <p>${escapeHtml(creator.role)} · 精选创作者主页</p>
             <div class="creator-gallery-actions">
-              <a class="button button-ghost" href="${ownerView ? "#upload" : "#support"}">${ownerView ? "管理作品" : "Contact"}</a>
-              <a class="button button-primary" href="${ownerView ? "#downloads" : "#collections"}">${ownerView ? "收益中心" : "Follow"}</a>
+              <a class="button button-ghost" href="${ownerView ? "#upload" : hrefFor("guide", "contact-team")}">${ownerView ? "管理作品" : "联系支持"}</a>
+              <a class="button button-primary" href="${ownerView ? "#downloads" : "#collections"}">${ownerView ? "收益中心" : "查看收藏"}</a>
               <a class="icon-button" href="${ownerView ? "#collections" : "#support"}" aria-label="${ownerView ? "进入收藏" : "分享"}">${icon(ownerView ? "folder_special" : "share")}</a>
             </div>
           </div>
@@ -897,7 +981,7 @@ window.SparksRenderers = ((utils) => {
         ${ownerView ? renderProfileActions() : ""}
         ${ownerBanner}
         <div class="creator-gallery-stats">
-          ${Object.entries(creator.stats).map(([label, value]) => `<article class="creator-stat-card creator-stat-card-light"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></article>`).join("")}
+          ${Object.entries(creator.stats).map(([label, value]) => `<article class="creator-stat-card creator-stat-card-light"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(creatorStatLabel(label))}</span></article>`).join("")}
         </div>
         <nav class="creator-gallery-tabs" aria-label="创作者内容切换">
           <button class="${tab === "works" ? "active" : ""}" type="button" ${pressedAttr(tab === "works")} data-action="set-creator-tab" data-tab="works">个人作品</button>
@@ -963,7 +1047,7 @@ window.SparksRenderers = ((utils) => {
         <article class="glass-panel auth-card auth-card-primary">
           <div class="auth-card-shell">
             <header class="auth-card-head">
-              <span class="eyebrow">Account Access</span>
+              <span class="eyebrow">账号入口</span>
               <h2>${signedIn ? "当前已登录" : "登录注册"}</h2>
               <p>${signedIn ? "你已经接入当前角色主页，可直接进入个人空间继续操作。" : "继续沿用现有页面结构，只把账号校验、角色分流和主页入口接到真实流程里。"}</p>
             </header>
@@ -994,7 +1078,7 @@ window.SparksRenderers = ((utils) => {
         <article class="glass-panel auth-card auth-card-secondary">
           <div class="auth-card-shell">
             <header class="auth-card-head">
-              <span class="eyebrow">Role Routing</span>
+              <span class="eyebrow">角色分流</span>
               <h2>登录后会发生什么</h2>
               <p>账号会先完成身份识别，再把你导向对应的角色主页，保持原有浏览动线不被打断。</p>
             </header>
@@ -1102,7 +1186,7 @@ window.SparksRenderers = ((utils) => {
 
   function renderMembership(appContent, state) {
     const flow = appContent.flows.membership;
-    const selected = state.selectedPlan || "Trial";
+    const selected = state.selectedPlan || "体验版";
     const body = `<div class="pricing-grid">${flow.tiers.map((tier) => `<article class="glass-panel price-card ${selected === tier.name ? "selected" : ""}"><span>${escapeHtml(tier.name)}</span><h2>${escapeHtml(tier.points)}</h2><p>${escapeHtml(tier.note)}</p><button class="button ${selected === tier.name ? "button-primary" : "button-ghost"} compact" type="button" data-action="select-plan" data-plan="${escapeHtml(tier.name)}">${selected === tier.name ? "当前方案" : "选择方案"}</button></article>`).join("")}</div>`;
     return pageShell("积分会员", flow.title, flow.subtitle, body, "membership-page");
   }
@@ -1128,9 +1212,9 @@ window.SparksRenderers = ((utils) => {
         <section class="account-shell">
           <section class="account-creator-callout">
             <div class="account-creator-frame">
-              <span class="eyebrow">Access Control</span>
+              <span class="eyebrow">权限控制</span>
               <h2>当前账号没有管理员权限</h2>
-              <p>V5 已加上角色权限控制。普通用户和创作者不能进入管理员主页。</p>
+              <p>v6 已加上角色权限控制。普通用户和创作者不能进入管理员主页。</p>
               <div class="account-entry-actions">
                 <a class="button button-primary" href="${escapeHtml(state.profileHomeHref || "#account")}">返回我的主页</a>
               </div>
@@ -1152,7 +1236,7 @@ window.SparksRenderers = ((utils) => {
       recheck: reviews.filter((item) => item.status === "复核中").length
     };
     const body = `
-      <section class="admin-shell-v5">
+      <section class="admin-shell-v6">
         <section class="profile-overview profile-overview-admin">
           <article class="profile-identity-card profile-surface-card profile-surface-card-dark">
             <div class="profile-identity-main">
@@ -1220,7 +1304,7 @@ window.SparksRenderers = ((utils) => {
                 <p>${escapeHtml(item.owner)} · ${escapeHtml(item.risk)}</p>
               </div>
               <div class="admin-review-side">
-                <strong class="admin-status-chip">${escapeHtml(item.status)}</strong>
+                <strong class="admin-status-chip" data-status="${escapeHtml(item.status)}">${escapeHtml(item.status)}</strong>
                 <div class="admin-review-actions">
                   <button class="button button-ghost compact" type="button" data-action="review-approve" data-id="${escapeHtml(item.id)}">通过</button>
                   <button class="button button-ghost compact" type="button" data-action="review-request-changes" data-id="${escapeHtml(item.id)}">待补充</button>
@@ -1260,7 +1344,7 @@ window.SparksRenderers = ((utils) => {
       <div class="search-summary glass-panel">
         <span>当前搜索</span>
         <strong>${escapeHtml(query || "未输入关键词")}</strong>
-        <p>${selected === "全部" ? "正在浏览全部素材。" : `当前只查看 ${escapeHtml(selected)} 分类。`}</p>
+        <p>${selected === "全部" ? "正在浏览全部素材。" : `当前只查看 ${escapeHtml(selected)} 分类。`} 当前排序为 ${escapeHtml(sortLabel(state.assetSort || "featured"))}。</p>
       </div>
       ${renderAssetBrowser(appContent, state, false)}
     `;
@@ -1312,7 +1396,7 @@ window.SparksRenderers = ((utils) => {
           <div class="notice-panel glass-panel project-note"><strong>当前缺口</strong><p>${escapeHtml(project.note)}</p></div>
         </article>
         <article class="glass-panel project-summary">
-          <span class="eyebrow">Prompt 备注</span>
+          <span class="eyebrow">提示词备注</span>
           <div class="info-list">${project.prompts.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}</div>
         </article>
       </div>
@@ -1347,6 +1431,87 @@ window.SparksRenderers = ((utils) => {
     return pageShell("项目夹详情", "项目夹详情", "把收藏夹升级成真正可承载素材、购买状态和创作备注的项目工作区。", body, "project-page");
   }
 
+  function renderGuide(appContent, state) {
+    const guide = getGuideById(state.activeGuideId);
+    const relatedAssets = guide.relatedAssets ? guide.relatedAssets.map((id) => getAssetById(id)) : [];
+    const body = `
+      <section class="guide-hero glass-panel">
+        <div class="guide-hero-copy">
+          <span class="eyebrow">${escapeHtml(guide.eyebrow)}</span>
+          <h1>${escapeHtml(guide.title)}</h1>
+          <p>${escapeHtml(guide.summary)}</p>
+        </div>
+        <div class="guide-hero-metrics">
+          ${guide.highlights.map((item) => `
+            <article class="guide-metric-card">
+              <span>${escapeHtml(item.label)}</span>
+              <strong>${escapeHtml(item.value)}</strong>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+      <section class="guide-layout">
+        <article class="guide-main glass-panel">
+          <div class="section-title">
+            <span class="eyebrow">执行清单</span>
+            <h2>${escapeHtml(guide.subtitle)}</h2>
+          </div>
+          <div class="guide-checklist">
+            ${guide.checklist.map((item) => `
+              <article class="guide-checklist-item">
+                ${icon("task_alt")}
+                <p>${escapeHtml(item)}</p>
+              </article>
+            `).join("")}
+          </div>
+          <div class="guide-sections">
+            ${guide.sections.map((section) => `
+              <article class="guide-section-card glass-panel">
+                <h3>${escapeHtml(section.title)}</h3>
+                <div class="info-list">${section.points.map((point) => `<p>${escapeHtml(point)}</p>`).join("")}</div>
+              </article>
+            `).join("")}
+          </div>
+        </article>
+        <aside class="guide-side">
+          <article class="guide-side-card glass-panel">
+            <span class="eyebrow">快速跳转</span>
+            <div class="guide-action-stack">
+              ${guide.actions.map((action, index) => `
+                <a class="button ${index === 0 ? "button-primary" : "button-ghost"} compact" href="${escapeHtml(hrefFor(action.route, action.params))}">
+                  ${escapeHtml(action.label)}
+                </a>
+              `).join("")}
+            </div>
+          </article>
+          <article class="guide-side-card glass-panel">
+            <span class="eyebrow">相关专题</span>
+            <div class="guide-topic-links">
+              ${Object.entries(appContent.guides).filter(([id]) => id !== state.activeGuideId).slice(0, 4).map(([id, item]) => `
+                <a class="guide-topic-link" href="${escapeHtml(hrefFor("guide", id))}">
+                  <strong>${escapeHtml(item.title)}</strong>
+                  <span>${escapeHtml(item.eyebrow)}</span>
+                </a>
+              `).join("")}
+            </div>
+          </article>
+        </aside>
+      </section>
+      ${relatedAssets.length ? `
+        <section class="scene-strip">
+          <div class="section-title">
+            <span class="eyebrow">相关素材</span>
+            <h2>继续沿着当前专题进入真实页面</h2>
+          </div>
+          <div class="asset-grid">
+            ${relatedAssets.map((asset, index) => assetCard(asset, { wide: index === 0 && relatedAssets.length > 1 })).join("")}
+          </div>
+        </section>
+      ` : ""}
+    `;
+    return pageShell("专题指南", guide.title, guide.subtitle, body, "guide-page");
+  }
+
   function timeline(steps, active = 1) {
     return `<div class="timeline">${steps.map((step, index) => `<article class="glass-panel timeline-step ${index < active ? "active" : ""}"><span>${String(index + 1).padStart(2, "0")}</span><h2>${escapeHtml(step)}</h2></article>`).join("")}</div>`;
   }
@@ -1368,7 +1533,8 @@ window.SparksRenderers = ((utils) => {
     admin: renderAdmin,
     search: renderSearch,
     collections: renderCollections,
-    project: renderProject
+    project: renderProject,
+    guide: renderGuide
   };
 
   return { renderers };

@@ -8,13 +8,15 @@
   const { escapeHtml } = window.SparksUtils;
   const assetIds = new Set(content.assets.items.map((item) => item.id));
   const creatorIds = new Set(Object.keys(content.creators));
-  const projectIds = new Set(Object.keys(content.projects));
+  const guideIds = new Set(Object.keys(content.guides || {}));
   const DEFAULT_ASSET_ID = content.assets.items[0].id;
   const DEFAULT_CREATOR_ID = content.community.people[0];
   const DEFAULT_PROJECT_ID = "short-drama-a";
+  const DEFAULT_GUIDE_ID = "account-management";
   const CREATOR_TABS = new Set(["works", "assets", "collections"]);
   const FILTER_CATEGORIES = new Set(["全部", "角色", "环境", "载具", "分镜脚本"]);
   const SCENE_TIME_KEYS = new Set(["day", "dusk", "night"]);
+  const ASSET_SORT_MODES = ["featured", "latest", "price-desc", "price-asc"];
 
   function cloneValue(value) {
     if (typeof structuredClone === "function") return structuredClone(value);
@@ -45,6 +47,10 @@
     return FILTER_CATEGORIES.has(category) ? category : "全部";
   }
 
+  function normalizeSortMode(mode) {
+    return ASSET_SORT_MODES.includes(mode) ? mode : "featured";
+  }
+
   function getAssetById(assetId) {
     return content.assets.items.find((item) => item.id === assetId) || content.assets.items[0];
   }
@@ -58,7 +64,15 @@
   }
 
   function isKnownProject(projectId) {
-    return projectIds.has(projectId);
+    return Boolean((state.projects || content.projects)[projectId]);
+  }
+
+  function isKnownGuide(guideId) {
+    return guideIds.has(guideId);
+  }
+
+  function getGuideById(guideId) {
+    return content.guides[guideId] || content.guides[DEFAULT_GUIDE_ID];
   }
 
   function countPendingPurchases() {
@@ -75,8 +89,9 @@
     route: router.routeFromHash(),
     query: "",
     menuOpen: false,
-    creatorMenuOpen: false,
     selectedCategory: "全部",
+    assetSort: "featured",
+    assetToolsOpen: false,
     sceneTime: "day",
     collectionCount: 0,
     uploadStatus: "草稿未提交",
@@ -92,7 +107,7 @@
     currentUser: null,
     profileHomeHref: "#account",
     licensePurchased: false,
-    selectedPlan: "Trial",
+    selectedPlan: "体验版",
     creatorTab: "works",
     reviewDecisions: {},
     reviewItems: cloneReviewItems(),
@@ -100,6 +115,7 @@
     detailAssetId: DEFAULT_ASSET_ID,
     activeCreatorId: DEFAULT_CREATOR_ID,
     activeProjectId: DEFAULT_PROJECT_ID,
+    activeGuideId: DEFAULT_GUIDE_ID,
     projects: cloneProjects(),
     downloadRecords: cloneDownloadRecords(),
     downloadActivity: cloneDownloadActivity(),
@@ -202,6 +218,7 @@
     state.route = router.routeFromHash();
     const params = router.paramsFromHash();
     const query = typeof params.q === "string" ? params.q : "";
+    const sort = normalizeSortMode(params.sort);
 
     if (state.route === "detail" || state.route === "licensing") {
       state.detailAssetId = isKnownAsset(params.asset) ? params.asset : DEFAULT_ASSET_ID;
@@ -217,9 +234,14 @@
       state.activeProjectId = isKnownProject(params.project) ? params.project : DEFAULT_PROJECT_ID;
     }
 
+    if (state.route === "guide") {
+      state.activeGuideId = isKnownGuide(params.guide) ? params.guide : DEFAULT_GUIDE_ID;
+    }
+
     if (state.route === "assets" || state.route === "search") {
       state.selectedCategory = normalizeFilterCategory(params.category);
       state.query = query;
+      state.assetSort = sort;
     } else if (query) {
       state.query = query;
     }
@@ -269,7 +291,6 @@
   const searchInput = document.getElementById("site-search");
   const profileLink = document.querySelector("[data-profile-link]");
   const siteFooter = document.querySelector(".site-footer");
-  let creatorMenuCloseTimer = 0;
   let lastMenuFocusTarget = null;
   let focusMainOnNextHashChange = true;
 
@@ -301,7 +322,61 @@
     const query = state.query.trim();
     if (query) params.q = query;
     if (state.selectedCategory !== "全部") params.category = state.selectedCategory;
+    if (state.assetSort !== "featured") params.sort = state.assetSort;
     return params;
+  }
+
+  function nextProjectId() {
+    let index = 1;
+    while (isKnownProject(`project-lab-${String(index).padStart(2, "0")}`)) index += 1;
+    return `project-lab-${String(index).padStart(2, "0")}`;
+  }
+
+  function createProjectFromCurrentContext() {
+    const projectId = nextProjectId();
+    const tag = state.selectedCategory === "全部" ? "综合灵感夹" : `${state.selectedCategory} 灵感夹`;
+    const queryLabel = state.query.trim() ? ` · ${state.query.trim()}` : "";
+    state.projects[projectId] = {
+      name: `${tag}${queryLabel}`,
+      summary: "用于承接当前筛选、搜索和收藏动作的新项目夹。",
+      note: "后续可继续补齐素材、购买状态和创作备注。",
+      stage: "新建中",
+      owner: "我的项目夹",
+      assets: [],
+      prompts: [
+        state.query.trim() ? `当前关键词：${state.query.trim()}` : "当前还没有填写关键词。",
+        state.selectedCategory === "全部" ? "建议先从角色、环境或分镜脚本中拆分子方向。" : `建议优先补齐 ${state.selectedCategory} 相关素材。`
+      ],
+      stats: [
+        { label: "已收集素材", value: "0 / 3" },
+        { label: "已购完成度", value: "0%" },
+        { label: "待补缺口", value: "等待添加" }
+      ]
+    };
+    recomputeProjectDerivedState();
+    state.activeProjectId = projectId;
+    goToRoute("project", projectId);
+    showToast("已创建新的项目夹");
+  }
+
+  function findGuideIdFromQuery(query) {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return DEFAULT_GUIDE_ID;
+
+    const direct = Object.entries(content.guides || {}).find(([id, guide]) => {
+      const haystack = `${id} ${guide.title} ${guide.subtitle} ${guide.summary} ${guide.checklist.join(" ")}`
+        .toLowerCase();
+      return haystack.includes(normalized);
+    });
+    if (direct) return direct[0];
+
+    if (normalized.includes("隐私")) return "privacy-policy";
+    if (normalized.includes("条款") || normalized.includes("协议")) return "terms-of-service";
+    if (normalized.includes("cookie")) return "cookie-policy";
+    if (normalized.includes("上传") || normalized.includes("素材")) return "upload-assets";
+    if (normalized.includes("审核") || normalized.includes("准则")) return "review-rules";
+    if (normalized.includes("联系") || normalized.includes("合作")) return "contact-team";
+    return "account-management";
   }
 
   function currentDetailRouteParams() {
@@ -321,7 +396,6 @@
     if (state.menuOpen && isMobileViewport()) {
       lastMenuFocusTarget = document.activeElement instanceof HTMLElement ? document.activeElement : menuButton;
     }
-    if (!state.menuOpen) state.creatorMenuOpen = false;
     document.body.dataset.menuOpen = String(state.menuOpen);
     syncMobileModalState();
     if (state.menuOpen && isMobileViewport()) window.requestAnimationFrame(focusFirstMenuItem);
@@ -338,47 +412,14 @@
     updateChrome();
   }
 
-  function clearCreatorMenuTimer() {
-    if (!creatorMenuCloseTimer) return;
-    window.clearTimeout(creatorMenuCloseTimer);
-    creatorMenuCloseTimer = 0;
-  }
-
-  function setCreatorMenuOpen(open, keepVisibleForOneSecond = false) {
-    clearCreatorMenuTimer();
-    if (!open && keepVisibleForOneSecond) {
-      creatorMenuCloseTimer = window.setTimeout(() => {
-        state.creatorMenuOpen = false;
-        updateChrome();
-      }, 1000);
-      return;
-    }
-    state.creatorMenuOpen = Boolean(open);
-    updateChrome();
-  }
-
   function renderNav() {
-    nav.innerHTML = content.nav.map((item) => {
-      if (item.route === "community") {
-        return `
-          <div class="nav-item nav-item-with-submenu" data-nav-group="creator" data-open="false">
-            <a href="#community" data-route="community" data-creator-trigger="true" aria-haspopup="true" aria-expanded="false">${escapeHtml(item.label)}</a>
-            <button class="nav-submenu-toggle" type="button" aria-label="展开创作者菜单" aria-haspopup="true" aria-expanded="false" data-creator-menu-toggle>
-              <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
-            </button>
-            <div class="nav-submenu" aria-label="创作者菜单">
-              <a href="#community" data-route="community">浏览创作者</a>
-              <a href="#creator-onboarding" data-route="creator-onboarding">成为创作者</a>
-            </div>
-          </div>
-        `;
-      }
-      return `<a href="#${escapeHtml(item.route)}" data-route="${escapeHtml(item.route)}">${escapeHtml(item.label)}</a>`;
-    }).join("");
+    nav.innerHTML = content.nav
+      .map((item) => `<a href="#${escapeHtml(item.route)}" data-route="${escapeHtml(item.route)}">${escapeHtml(item.label)}</a>`)
+      .join("");
   }
 
   function currentPageTone() {
-    if (state.route === "community" || state.route === "account" || state.route === "creator-onboarding" || state.route === "admin" || state.route === "auth") {
+    if (state.route === "community" || state.route === "account" || state.route === "creator-onboarding" || state.route === "admin" || state.route === "auth" || state.route === "guide") {
       return "light";
     }
     if (state.route === "creator") {
@@ -427,12 +468,6 @@
     menuButton.setAttribute("aria-expanded", String(state.menuOpen));
     menuButton.setAttribute("aria-label", state.menuOpen ? "关闭导航" : "打开导航");
     nav.setAttribute("aria-hidden", String(!state.menuOpen && window.innerWidth <= 920));
-    const creatorGroup = nav.querySelector("[data-nav-group='creator']");
-    const creatorTrigger = nav.querySelector("[data-creator-trigger='true']");
-    const creatorMenuToggle = nav.querySelector("[data-creator-menu-toggle]");
-    if (creatorGroup) creatorGroup.dataset.open = String(state.creatorMenuOpen);
-    if (creatorTrigger) creatorTrigger.setAttribute("aria-expanded", String(state.creatorMenuOpen));
-    if (creatorMenuToggle) creatorMenuToggle.setAttribute("aria-expanded", String(state.creatorMenuOpen));
     header.dataset.elevated = String(window.scrollY > 8);
     updateProfileLink();
     syncMobileModalState();
@@ -443,9 +478,14 @@
     if (old) old.remove();
     const toast = document.createElement("div");
     toast.className = "toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
     toast.textContent = message;
     document.body.append(toast);
-    window.setTimeout(() => toast.remove(), 2200);
+    window.setTimeout(() => {
+      toast.classList.add("toast-leaving");
+      window.setTimeout(() => toast.remove(), 180);
+    }, 2000);
   }
 
   function goToRoute(route, value = "", options = {}) {
@@ -455,7 +495,10 @@
       window.location.hash = nextHash;
     } else {
       rerender();
-      if (focusMainOnNextHashChange) app.focus({ preventScroll: true });
+      if (focusMainOnNextHashChange) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        app.focus({ preventScroll: true });
+      }
       focusMainOnNextHashChange = true;
     }
   }
@@ -486,7 +529,7 @@
       clearAuthState();
       state.authBusy = false;
       goToRoute("auth");
-      showToast("已退出登录");
+      showToast("已退出登录，欢迎再次回来");
     }
   }
 
@@ -520,7 +563,7 @@
       }
       const destination = getProfileHomeDestination(result.profile);
       goToRoute(destination.route, destination.params);
-      showToast("登录成功");
+      showToast("登录成功，已进入主页");
     } catch (error) {
       state.authError = error.message || "登录失败，请检查账号密码。";
       rerender();
@@ -597,6 +640,28 @@
     if (action === "open-project") {
       state.activeProjectId = isKnownProject(target.dataset.project) ? target.dataset.project : DEFAULT_PROJECT_ID;
       goToRoute("project", state.activeProjectId);
+      return;
+    }
+
+    if (action === "toggle-asset-sort") {
+      const currentIndex = ASSET_SORT_MODES.indexOf(state.assetSort);
+      state.assetSort = ASSET_SORT_MODES[(currentIndex + 1) % ASSET_SORT_MODES.length];
+      if (state.route === "assets" || state.route === "search") {
+        goToRoute(state.route, buildAssetRouteParams(), { focusMain: false });
+      } else {
+        rerender("已切换素材排序");
+      }
+      return;
+    }
+
+    if (action === "toggle-asset-tools") {
+      state.assetToolsOpen = !state.assetToolsOpen;
+      rerender(state.assetToolsOpen ? "已展开筛选建议" : "");
+      return;
+    }
+
+    if (action === "create-project") {
+      createProjectFromCurrentContext();
       return;
     }
 
@@ -686,7 +751,7 @@
     }
 
     if (action === "select-plan") {
-      state.selectedPlan = target.dataset.plan || "Trial";
+      state.selectedPlan = target.dataset.plan || "体验版";
       rerender(`已选择 ${state.selectedPlan}`);
       return;
     }
@@ -728,33 +793,12 @@
     });
 
     nav.addEventListener("click", (event) => {
-      const menuToggle = event.target.closest("[data-creator-menu-toggle]");
-      if (menuToggle) {
-        event.preventDefault();
-        event.stopPropagation();
-        setCreatorMenuOpen(!state.creatorMenuOpen);
-      }
-    });
-
-    const creatorMenuGroup = nav.querySelector("[data-nav-group='creator']");
-    if (creatorMenuGroup) {
-      creatorMenuGroup.addEventListener("mouseenter", () => setCreatorMenuOpen(true));
-      creatorMenuGroup.addEventListener("mouseleave", () => setCreatorMenuOpen(false, true));
-      creatorMenuGroup.addEventListener("focusin", () => setCreatorMenuOpen(true));
-      creatorMenuGroup.addEventListener("focusout", (event) => {
-        if (creatorMenuGroup.contains(event.relatedTarget)) return;
-        setCreatorMenuOpen(false, true);
-      });
-      creatorMenuGroup.addEventListener("click", (event) => {
-        if (event.target.closest("a[data-route]")) setCreatorMenuOpen(false);
-      });
-    }
-
-    nav.addEventListener("click", (event) => {
-      if (event.target.closest("a[data-route]")) {
-        setCreatorMenuOpen(false);
-        closeMenu();
-      }
+      const routeLink = event.target.closest("a[data-route]");
+      if (!routeLink) return;
+      event.preventDefault();
+      const route = routeLink.dataset.route || "home";
+      closeMenu();
+      goToRoute(route);
     });
 
     searchInput.addEventListener("input", (event) => {
@@ -770,7 +814,6 @@
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
-        setCreatorMenuOpen(false);
         closeMenu();
       }
     });
@@ -787,6 +830,13 @@
       const authForm = event.target.closest("[data-auth-form]");
       if (authForm) {
         void handleAuthSubmit(authForm);
+        return;
+      }
+      const supportForm = event.target.closest("[data-support-search]");
+      if (supportForm) {
+        const input = supportForm.querySelector("input[type='search']");
+        const query = input ? input.value.trim() : "";
+        goToRoute("guide", findGuideIdFromQuery(query));
       }
     });
   }

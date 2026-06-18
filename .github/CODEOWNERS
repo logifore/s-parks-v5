@@ -1,0 +1,30 @@
+# S-parks V5 CODEOWNERS
+# 说明：
+# 1. 当前先默认把 @logifore 设为主要 owner，保证规则能立即生效。
+# 2. 后续你拿到同事的 GitHub 用户名后，直接在对应行后面继续追加即可。
+# 3. GitHub 会在这些文件被改动时自动请求对应 owner review。
+
+# 默认 owner
+* @logifore
+
+# 你负责的前端 UI / 交互层
+/index.html @logifore
+/assets/css/ @logifore
+/assets/js/renderers.js @logifore
+/assets/js/content.js @logifore
+/assets/js/particles.js @logifore
+
+# 需要功能协作时重点 review 的逻辑层
+/assets/js/app.js @logifore
+/assets/js/auth.js @logifore
+/assets/js/router.js @logifore
+/assets/js/utils.js @logifore
+/assets/js/config.js @logifore
+/supabase/ @logifore
+
+# 协作文档和发布说明
+/README.md @logifore
+/CHANGELOG.md @logifore
+/SUPABASE_SETUP.md @logifore
+/TEST_ACCOUNTS.md @logifore
+/CONTRIBUTING.md @logifore
